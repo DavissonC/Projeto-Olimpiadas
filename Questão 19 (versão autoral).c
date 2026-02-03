@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <string.h>
+
 // Calcula os 10 atletas mais jovens com pior colocação de todos os jogos olímpicos
 
 // Dados de cada atleta (nome, país, gênero, pior posição)
@@ -42,13 +45,13 @@ int main()
 int CalculaPioresAtletasNovos(Athlete *mascAthletes, Athlete *femAthletes, int *biggestResults, int *preenchidos, Athlete nextAthlete)
 {
      // Pontuação ponderada baseada na idade e na posição do atleta 
-    int athleteResults = CalculaResultados(nextAthlete.age, nextAthlete.worstPosition);
+    nextAthlete.results = CalculaResultados(nextAthlete.age, nextAthlete.worstPosition);
 
     // Divisão por sexo dos atletas
     if(strcmp(nextAthlete.sex, "Male") == 0)
     {
         // Esse atleta tem pontuação menor que o melhor da lista dos piores?
-        if(athleteResults < *biggestResults)
+        if(nextAthlete.results < *biggestResults)
         {
             AlteraListaDosPiores(mascAthletes, nextAthlete, biggestResults, preenchidos);
         }
@@ -56,11 +59,13 @@ int CalculaPioresAtletasNovos(Athlete *mascAthletes, Athlete *femAthletes, int *
     else
     {
         // Esse atleta tem pontuação menor que o melhor da lista dos piores?
-        if(athleteResults < *(biggestResults + 1))
+        if(nextAthlete.results < *(biggestResults + 1))
         {
             AlteraListaDosPiores(femAthletes, nextAthlete, biggestResults + 1, preenchidos + 1);
         }
     }
+
+    return 0;
 }
 
 int AlteraListaDosPiores(Athlete *athletesList, Athlete athlete, int *biggestResults, int *preenchidos)
@@ -70,13 +75,11 @@ int AlteraListaDosPiores(Athlete *athletesList, Athlete athlete, int *biggestRes
     {
         *(athletesList + *preenchidos) = athlete;
         *preenchidos += 1;
-        (athletesList + *preenchidos) -> results = CalculaResultados(athlete.age, athlete.worstPosition);
     }
     // Senão, substitui o de maior pontuação (último da lista)
     else
     {
         *(athletesList + 9) = athlete;
-        (athletesList + 9) -> results = CalculaResultados(athlete.age, athlete.worstPosition);
     }
 
     // Reorganiza a lista para que esteja em ordem crescente de pontuação
@@ -92,9 +95,16 @@ int AlteraListaDosPiores(Athlete *athletesList, Athlete athlete, int *biggestRes
         }
     }
 
-    if (*preenchidos == 10) {
+    if (*preenchidos == 10) 
+    {
         *biggestResults = athletesList[9].results;
     }
+    else  
+    {
+        *biggestResults = 1000000; // Garante entrada até encher o Top 10
+    }
+
+    return 0;
 }
 
 int CalculaResultados(int age, int position)
