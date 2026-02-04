@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 // Calcula os 10 atletas mais jovens com pior colocação de todos os jogos olímpicos
 
@@ -9,6 +10,8 @@ typedef struct
     char name[100];
     char country[40];
     char sex[12];
+    char born[50]; 
+    int id;
     int worstPosition;
     int age;
     int results;
@@ -18,6 +21,7 @@ typedef struct
 int CalculaPioresAtletasNovos(Athlete *mascAthletes, Athlete *femAthletes, int *biggestResults, int *preenchidos, Athlete nextAthlete);
 int AlteraListaDosPiores(Athlete *athletesList, Athlete athlete, int *biggestResults, int *preenchidos);
 int CalculaResultados(int age, int position);
+int CompararAtletasPorID(const void *a, const void *b);
 
 int main()
 {
@@ -25,20 +29,63 @@ int main()
     Athlete mascAthletes[10];
     Athlete femAthletes[10];
 
+    // Lista para armazenar todos os atletas
+    int actualLimit = 150000;
+    Athlete *allAthletes = malloc(sizeof(Athlete) * actualLimit);
+    int totalAcessedAthletes = 0;
+
     // Maiores resultados armazenados nas listas
     int biggestResults[2] = {1000000, 1000000};
 
     // Quantidade de atletas já inseridos nas listas
     int preenchidos[2] = {0, 0};
 
-    // Verifica se ainda há algum atleta no banco de dados ou se já podemos parar o laço
-    int hasMoreAthletes = 1;
+    FILE *bios = fopen("bios.csv", "r");
 
-    while(hasMoreAthletes)
+    // Verifica se o arquivo foi aberto corretamente
+    if (bios == NULL) 
     {
-
+        printf("Erro ao abrir o ficheiro bios.csv!");
+        return 1;
     }
 
+    // Escaneia cada atleta e guarda os dados necessários para a resolução
+    while(fscanf(bios, " %*[^,],%[^,],%*[^,],%[^,],%[^,],%*[^,],%[^,],%d%*[^ \n]"
+        ,allAthletes[totalAcessedAthletes].sex, allAthletes[totalAcessedAthletes].name, 
+        allAthletes[totalAcessedAthletes].born, allAthletes[totalAcessedAthletes].country, 
+        &allAthletes[totalAcessedAthletes].id) == 5)
+    {
+        totalAcessedAthletes++;
+        if (totalAcessedAthletes >= actualLimit)
+        {
+            actualLimit *= 2;
+            Athlete *temp = realloc(allAthletes, sizeof(Athlete) * actualLimit);
+            if (temp != NULL) 
+            {
+                allAthletes = temp;
+            } 
+            else 
+            {
+                free(allAthletes);
+                return 1;
+            }
+        }
+    }
+
+    fclose(bios);
+
+    qsort(allAthletes, totalAcessedAthletes, sizeof(Athlete), compararAtletasPorID);
+
+    FILE *results = fopen("results.csv", "r");
+    if (results == NULL) 
+    {
+        printf("Erro ao abrir o ficheiro results.csv!");
+        return 1;
+    }
+
+    fclose(results);
+
+    free(allAthletes);
     return 0;
 }
 
@@ -110,4 +157,9 @@ int AlteraListaDosPiores(Athlete *athletesList, Athlete athlete, int *biggestRes
 int CalculaResultados(int age, int position)
 {
     return (age * 1000) - position;
+}
+
+int CompararAtletasPorID(const void *a, const void *b) 
+{
+    return ((Athlete *)a)->id - ((Athlete *)b)->id;
 }
