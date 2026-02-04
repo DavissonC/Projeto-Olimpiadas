@@ -26,7 +26,7 @@
 
 
 
-// === FUNÇÕES AUXILIARES (PRIVADAS)===
+// === FUNÇÕES AUXILIARES (PRIVADAS) ===
 
 // Função para remover aspas da string:
 void limpar_string ( char* string ) {

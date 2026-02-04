@@ -3,13 +3,17 @@
    @author Mateus Aranha - (github.com/matt-aranha)
 */
 
-# ifndef ANALISE_H              // Se não foi definido...
-# define ANALISE_H              // Agora define.
 
-// f_calcular_idade
+#ifndef ANALISE_H                 // Se não foi definido...
+   #define ANALISE_H              // Agora define.
 
-// f_ordenar_por_idade
+   #include "dados.h"
 
-// f_filtrar_medalhistas
+   // Função para ordenar o vetor de medalhistas do mais velho para o mais novo.
+   void ordenar_medalhistas ( Medalhista* lista, int total_medalhistas );
 
-# endif                         // Fim do if.
+   // Função para exibir o relatório final (Top N por gênero).
+   void exibir_ranking_idade ( Medalhista* lista, int total_medalhistas );
+
+   
+#endif                            // Fim do if.
