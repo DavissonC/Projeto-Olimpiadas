@@ -1,3 +1,13 @@
+/*
+    Para a lógica do problema, precisarei:
+      1. Checar se receberam medalhas;
+      2. Calcular idade que tinha quando ganhou medalha (Ano da sua última olimpíada - Ano de nascimento);
+      3. Separar por gênero;
+      4. Ordenar do mais velho ao mais novo;
+      5. Exibir resultado.
+*/
+
+
 # include <stdio.h>
 # include <string.h>
 # include "dados.h"
