@@ -140,9 +140,9 @@ int carregar_atletas ( const char* caminho_arquivo, Atleta *banco_dados ) {
 
         // Liberar memória auxiliar das string.
         if ( s_id ) free( s_id );
+        if ( s_nome ) free( s_nome );
         if ( s_genero ) free( s_genero );
         if ( s_nascimento ) free( s_nascimento );
-        if ( s_nome ) free( s_nome );
     }
     
     fclose(f);
