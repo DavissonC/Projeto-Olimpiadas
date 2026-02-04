@@ -39,9 +39,69 @@
 #include "leitura.h"
 #include "analise.h"
 
+#define MAX_ATLETAS 200000                                                               // No arquivo 'bios.csv', o ID vai até 149.814
+#define MAX_MEDALHISTAS 50000
+
+
 
 
 int main () {
 
+    printf( "--- SISTEMA DE ANALISE OLIMPICA ---\n" );
+
+
+    // === ALOCAR MEMÓRIA DINÂMICAMENTE (HEAP):
+        printf( "Iniciando Alocacao de Memoria..." );
+        
+        Atleta* bd_atletas = (Atleta *) calloc(MAX_ATLETAS, sizeof(Atleta));
+        Medalhista* lista_final = (Medalhista *) calloc(MAX_MEDALHISTAS, sizeof(Medalhista));
+        
+        // Verificação de segurança caso falte memória RAM.
+        if ( bd_atletas == NULL || lista_final == NULL ) {
+            printf( "ERRO: Falha na alocacao de memoria. Tente Reduzir os valores MAX\n");
+            return 1;
+        }
+    //
+
+
+    // === LEITURA DOS ATLETAS:
+        printf( "Lendo arquivo de atletas..." );
+        int qtd_atletas = carregar_atletas("../Banco de Dados/bios.csv", bd_atletas);
+
+        if ( qtd_atletas <= 0 ) {
+            printf( "\nERRO: Nenhum atleta lido. Verifique o nome do arquivo ou formato.\n" );
+            free(bd_atletas);
+            free(lista_final);
+            return 1;
+        }
+        printf( "Exito! (%d registros carregados)\n", qtd_atletas );
+    //
+
+
+    // === PROCESSAMENTO E CRUZAMENTO DE DADOS (JOIN):
+        printf( "Lendo arquivo de resultados e cruzando os dados..." );
+        int qtd_medalhistas = processar_resultados("../Banco de Dados/results.csv", bd_atletas, lista_final);
+
+        if ( qtd_medalhistas == 0 ) {
+            printf( "AVISO: Nenhum medalhista encontrado. Verifique os filtros de leitura.\n");
+
+        } else {
+            printf( "Exito! (%d medalhas processadas)\n", qtd_medalhistas );
+
+            printf( "Ordenando ranking por idade..." );
+            ordenar_medalhistas(lista_final, qtd_medalhistas);
+            printf( "Concluido.\n" );
+
+            exibir_ranking_idade(lista_final, qtd_medalhistas, 10);
+        }
+    //
+
+
+    // === LIBERAR MEMÓRIA ALOCADA:
+    free( bd_atletas );
+    free( lista_final );
+
+    printf( "\nPrograma finalizado com sucesso.\n");
+    
     return 0;
 }
