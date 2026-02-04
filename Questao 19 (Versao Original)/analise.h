@@ -13,7 +13,7 @@
    void ordenar_medalhistas ( Medalhista* lista, int total_medalhistas );
 
    // Função para exibir o relatório final (Top N por gênero).
-   void exibir_ranking_idade ( Medalhista* lista, int total_medalhistas );
+   void exibir_ranking_idade ( Medalhista* lista, int total_medalhistas, int top_n );
 
    
 #endif                            // Fim do if.
