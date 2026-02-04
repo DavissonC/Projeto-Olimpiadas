@@ -6,16 +6,22 @@ desse número ao longo do tempo, separando Verão e Inverno.*/
 
 typedef struct{
     int ano;
-    int IDatl;
+    int IDsatl[200000]; //Array que guarda os IDs dos atletas
     char tipo[10]; //Verão ou Inverno
     int qtdAtletas;
-}EdicaoPadrao;
+}EdicaoPadrao; //Struct que guarda os dados de cada ediçao, separando Verão e Inverno, sendo 10 vezes cada
+EdicaoPadrao verao[10];
+EdicaoPadrao inverno[10];
+
 
 //Por boa prática divido as açoes da funçao principal em outra funçao mais especifica
+//Funçao que verifica se o ID ja existe na ediçao
 int verificarId(EdicaoPadrao* ed, int id){
     for(int i = 0; i < 10; i++){
-        if(ed[i].IDatl == id){
-            return 1; //Retorno 1 se o ID ja existir
+        for(int j = 0; j < ed[i].qtdAtletas; j++){ 
+            if(ed[i].IDsatl[j] == id){
+                return 1; //Retorno 1 se o ID ja existir
+            }
         }
     }
     return 0; //Retorno 0 se o ID nao existir
@@ -27,7 +33,7 @@ void addIds(EdicaoPadrao* ed, int ano, int id, char* tipo){
         if(ed[i].ano == ano){ //Verifico se o ano ja existe no array
             if(!verificarId(ed, id)){ //Se o ID nao existir, adiciono
                 ed[i].qtdAtletas += 1;
-                ed[i].IDatl = id; //Adiciono o ID do novo atleta
+                ed[i].IDsatl[ed[i].qtdAtletas - 1] = id; //Adiciono o ID do novo atleta no array
             }
             return; //Saio da funçao
         }
@@ -36,7 +42,7 @@ void addIds(EdicaoPadrao* ed, int ano, int id, char* tipo){
     for(int i = 0; i < 10; i++){
         if(ed[i].ano == 0){ //Procuro a primeira posiçao vazia
             ed[i].ano = ano;
-            ed[i].IDatl = id; //Adiciono o primeiro atleta
+            ed[i].IDsatl[0] = id; //Adiciono o primeiro atleta
             ed[i].qtdAtletas = 1;
             strcpy(ed[i].tipo, tipo); //Copio o tipo (Verão ou Inverno)
             return; //Saio da funçao
