@@ -40,7 +40,7 @@ void ordenar_medalhistas (Medalhista* lista, int total_medalhistas ) {
 
 
 // Função para exibir o relatório final (Top N por gênero).
-void exibir_ranking_idade (Medalhista* lista, int total_medalhistas ) {
+void exibir_ranking_idade (Medalhista* lista, int total_medalhistas, int top_n ) {
 
     // TÍTULO GERAL:
     printf( "\n===================================================================\n" );
@@ -58,13 +58,13 @@ void exibir_ranking_idade (Medalhista* lista, int total_medalhistas ) {
 
             if ( lista[i].idade_no_evento > 0 && lista[i].idade_no_evento < 98 ) {
 
-                printf( "%d. %s\n", contador + 1, lista[i].nome );
+                printf( "%d. %s (%s)\n", contador + 1, lista[i].nome, lista[i].noc );
                 printf( "   Idade: %d anos | Medalha: %s\n", lista[i].idade_no_evento, lista[i].medalha );
                 printf( "   Evento: %s (%d)\n", lista[i].modalidade, lista[i].ano_olimpiada );
                 printf( "-------------------------------------------------------\n" );
 
                 contador++;
-                if ( contador == 10 ) break;                                             // Para assim que completar o Top 10).
+                if ( contador >= top_n ) break;                                             // Para assim que completar o Top N.
             }
         }
     }
@@ -81,13 +81,13 @@ void exibir_ranking_idade (Medalhista* lista, int total_medalhistas ) {
 
             if ( lista[i].idade_no_evento > 0 && lista[i].idade_no_evento < 98 ) {
 
-                printf( "%d. %s\n", contador + 1, lista[i].nome );
+                printf( "%d. %s (%s)\n", contador + 1, lista[i].nome, lista[i].noc );
                 printf( "   Idade: %d anos | Medalha: %s\n", lista[i].idade_no_evento, lista[i].medalha );
                 printf( "   Evento: %s (%d)\n", lista[i].modalidade, lista[i].ano_olimpiada );
                 printf( "-------------------------------------------------------\n" );
 
                 contador++;
-                if ( contador == 10 ) break;                                             // Para assim que completar o Top 10).
+                if ( contador >= top_n ) break;                                             // Para assim que completar o Top 10).
             }
         }
     }
