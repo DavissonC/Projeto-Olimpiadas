@@ -12,7 +12,7 @@ typedef struct
     char sex[12];
     char born[50]; 
     int id;
-    int worstPosition;
+    int Position;
     int age;
     int results;
 } Athlete;
@@ -74,14 +74,53 @@ int main()
 
     fclose(bios);
 
-    qsort(allAthletes, totalAcessedAthletes, sizeof(Athlete), compararAtletasPorID);
+    // Ordenamos a lista com base nos IDs, para garantir que depois, possamos usar a busca binária corretamente
+    qsort(allAthletes, totalAcessedAthletes, sizeof(Athlete), CompararAtletasPorID);
 
+    // Agora, abrimos o arquivo de resultados para enfim, fazer o cálculo dos TOP 10
     FILE *results = fopen("results.csv", "r");
+
     if (results == NULL) 
     {
         printf("Erro ao abrir o ficheiro results.csv!");
         return 1;
     }
+
+    // searchKey é uma struct vazia para guardar o ultimo ID lido em resultados
+    // found é um ponteiro que deve apontar para a localização exata do atleta na lista de atletas
+    Athlete searchKey, *found;
+    
+    char Game[50];
+    int yearOfGame;
+    
+    while(fscanf(results, " %[^,],%*[^,],%*[^,],%d,%*[^,],%*[^,],%d%*[^ \n]", Game, &searchKey.Position, &searchKey.id) == 3)
+    {
+        // Executamos uma busca binária pelo atleta atual
+        found = bsearch(&searchKey, allAthletes, totalAcessedAthletes, sizeof(Athlete), CompararAtletasPorID);
+
+        if (found != NULL)
+        {
+            // Obtemos a idade do atleta
+            if (sscanf(Game, "%d", &yearOfGame) == 1) 
+            {
+                // Calcula a idade baseada no ano da Olimpíada
+                int birthYear;
+                sscanf(found->born, "%d", &birthYear); 
+                found->age = yearOfGame - birthYear;
+                found->Position = searchKey.Position;
+            }
+            // Tenta inserir nas listas Top 10
+            CalculaPioresAtletasNovos(mascAthletes, femAthletes, biggestResults, preenchidos, *found);
+        }
+    }
+
+    printf("\nTOP 10 PIORES E MAIS JOVENS - MASCULINO\n");
+    for(int i=0; i<preenchidos[0]; i++) 
+        printf("%d. %-20s | Idade: %d | Pos: %d | Score: %d\n", i+1, mascAthletes[i].name, mascAthletes[i].age, mascAthletes[i].Position, mascAthletes[i].results);
+
+    printf("\nTOP 10 PIORES E MAIS JOVENS - FEMININO\n");
+    for(int i=0; i<preenchidos[1]; i++) 
+        printf("%d. %-20s | Idade: %d | Pos: %d | Score: %d\n", i+1, femAthletes[i].name, femAthletes[i].age, femAthletes[i].Position, femAthletes[i].results);
 
     fclose(results);
 
@@ -92,7 +131,7 @@ int main()
 int CalculaPioresAtletasNovos(Athlete *mascAthletes, Athlete *femAthletes, int *biggestResults, int *preenchidos, Athlete nextAthlete)
 {
      // Pontuação ponderada baseada na idade e na posição do atleta 
-    nextAthlete.results = CalculaResultados(nextAthlete.age, nextAthlete.worstPosition);
+    nextAthlete.results = CalculaResultados(nextAthlete.age, nextAthlete.Position);
 
     // Divisão por sexo dos atletas
     if(strcmp(nextAthlete.sex, "Male") == 0)
