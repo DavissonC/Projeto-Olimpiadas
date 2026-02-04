@@ -103,7 +103,7 @@ char* get_csv_field( char* line, int number ) {
 
 
 
-// === FUNÇÕES PRINCIPAIS (DO HEADER)===
+// === FUNÇÕES PRINCIPAIS (DO HEADER) ===
 
 // Função para carregar os dados dos atletas:
 int carregar_atletas ( const char* caminho_arquivo, Atleta *banco_dados ) {
@@ -167,6 +167,7 @@ int carregar_atletas ( const char* caminho_arquivo, Atleta *banco_dados ) {
     fclose(f);                                                                           // Fechar o arquivo.
     return contador;                                                                     // Retornar o total de atletas lidos.
 }
+
 
 // Função para processar os resultados dos medalhistas:
 int processar_resultados ( const char* caminho_arquivo, Atleta* banco_dados, Medalhista* lista_final ) {
