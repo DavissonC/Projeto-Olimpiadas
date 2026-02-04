@@ -73,7 +73,7 @@ void exibir_ranking_idade (Medalhista* lista, int total_medalhistas, int top_n )
 
     // LOOP 2 - MASCULINO:
     printf( "\n--- MASCULINO ---\n" );
-    int contador = 0;
+    contador = 0;
 
     for ( int i = 0 ; i < total_medalhistas ; i++ ) {
         // Filtrar por gênero 'F'.

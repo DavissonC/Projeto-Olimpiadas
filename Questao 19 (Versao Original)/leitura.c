@@ -111,7 +111,7 @@ int carregar_atletas ( const char* caminho_arquivo, Atleta *banco_dados ) {
     FILE* f = fopen(caminho_arquivo, "r");                                               // Abrir arquivo no modo leitura.
 
         if ( !f ) {
-            printf( "Erro ao abrir arquivo de atletas: &s\n", caminho_arquivo );
+            printf( "Erro ao abrir arquivo de atletas: %s\n", caminho_arquivo );
             return -1;
         }
 
