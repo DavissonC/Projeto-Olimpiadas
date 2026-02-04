@@ -81,3 +81,70 @@ char* get_csv_field( char* line, int number ) {
     free(dup);
     return result;
 }
+
+
+
+
+// === FUNÇÕES PRINCIPAIS (DO HEADER)===
+
+// Função para carregar os dados dos atletas:
+int carregar_atletas ( const char* caminho_arquivo, Atleta *banco_dados ) {
+    FILE* f = fopen(caminho_arquivo, "r");
+
+    if ( !f ) {
+        printf( "Erro ao abrir arquivo de atletas: &s\n", caminho_arquivo );
+        return -1;
+    }
+
+    char linha[BUFFER_SIZE];
+    int contador = 0;
+
+    // Pular cabeçalho.
+    fgets(linha, BUFFER_SIZE, f);
+
+    while ( fgets(linha, BUFFER_SIZE, f) ) {
+        char* s_id = get_csv_field(linha, A_COL_ID);
+        char* s_nome = get_csv_field(linha, A_COL_NOME);
+        char* s_genero = get_csv_field(linha, A_COL_GENERO);
+        char* s_nascimento = get_csv_field(linha, A_COL_NASCIMENTO);
+
+        if ( s_id && s_nome && s_genero ) {
+            int id = atoi(s_id);
+
+            // Verificar se o ID é válido para usar como índice.
+            if ( id > 0 ) {
+                banco_dados[id].id = id;
+
+                limpar_string(s_nome);
+                strncpy(banco_dados[id].nome, s_nome, MAX_NOME - 1);
+                banco_dados[id].nome[MAX_NOME - 1] = '\0';                              // Garantir que a terminação seja nula.
+
+                // Converter Male/Female => M/F.
+                limpar_string(s_genero);
+                char g = s_genero[0];                                                   // Pega a primeira letra.
+                if ( g == 'M' || g == 'm' ) banco_dados[id].genero = 'M';               // Se a primeira letra for 'M' ou 'm', muda o genero para 'M'.
+                else if ( g == 'F' || g == 'f' ) banco_dados[id].genero = 'F';          // Se a primeira letra for 'F' ou 'f', muda o genero para 'F'.
+                else banco_dados[id].genero = '?';                                      // Gênero desconhecido.
+
+                // Extrair ano de nascimento do atleta.
+                if ( s_nascimento ) {
+                    banco_dados[id].ano_nascimento = extrair_ano_string(s_nascimento);
+
+                } else {
+                    banco_dados[id].ano_nascimento = 0;                                 // Erro ao ler.
+                }
+
+                contador++;                                                             // Atualizar a quantidade de atletas lidos.
+            }
+        }
+
+        // Liberar memória auxiliar das string.
+        if ( s_id ) free( s_id );
+        if ( s_genero ) free( s_genero );
+        if ( s_nascimento ) free( s_nascimento );
+        if ( s_nome ) free( s_nome );
+    }
+    
+    fclose(f);
+    return contador;                                                                    // Retornar o total de atletas lidos.
+}
