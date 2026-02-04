@@ -9,8 +9,7 @@ typedef struct{
 
 
 int fcalatletasultimos10an(){ //Por boa prática divido as açoes da funçao principal em outra funçao mais especifica
-    EdicaoPadrao verao[10]; //Para isso eu pego a estrutura de uma unica ediçao de olimpiada e divido preencho um array de tamanho 10
-    EdicaoPadrao inverno[10];
+    for(int i = 0; i<)
 
 
 }
@@ -23,5 +22,7 @@ int main()
         printf("Não foi possível executar o arquivo");
         return 1;
     }
-    
+    EdicaoPadrao verao[10]; //Para isso eu pego a estrutura de uma unica ediçao de olimpiada e divido, depois preencho um array de tamanho 10
+    EdicaoPadrao inverno[10];
+
 }
