@@ -21,6 +21,7 @@ int anovalido(int *anos, int ano);
 void ordenaredicoes(EdicaoPadrao* arrayEdicoes, int tamanho);
 void insereAno(int *anos, int ano);
 int verificarId(EdicaoPadrao* ed, int id);
+char* ler_campo(char** cursor);
 
 void insereAno(int *anos, int ano) { //Funçao que insere o ano no array de anos, se ja existir, nao insere novamente
     //Verifica se o ano já existe no array para não duplicar
@@ -57,6 +58,53 @@ void ordenaredicoes(EdicaoPadrao* arrayEdicoes, int tamanho) { //Funçao que ord
             }
         }
     }
+}
+
+// Esta função pega o texto até a próxima vírgula, retornando vazio se não tiver nada
+char* ler_campo(char** cursor) {
+    char* inicio = *cursor;
+    if (inicio == NULL) return NULL;
+
+    char* atual = inicio;
+    int dentro_aspas = 0;
+
+    // Se o campo começa com aspas, pulamos a aspa inicial
+    if (*atual == '"') {
+        dentro_aspas = 1;
+        inicio++; 
+        atual++;
+    }
+
+    while (*atual != '\0') {
+        // Se achou outra aspa, inverte o estado (abre/fecha)
+        if (*atual == '"') {
+            // Verifica se é aspa dupla ("") que conta como aspa literal, ou fechamento
+            // Para simplificar neste exercício, assumimos que fecha o campo ou é parte do texto
+            // Mas o importante é que só vamos parar na virgula se dentro_aspas for 0
+            if (dentro_aspas && *(atual+1) == ',') {
+               dentro_aspas = 0; // Vai fechar na proxima checagem
+               *atual = '\0'; // Remove a aspa final
+            }
+        }
+        // Se achou vírgula E NÃO está dentro de aspas, é o fim do campo
+        else if (*atual == ',' && !dentro_aspas) {
+            *atual = '\0';     // Corta a string aqui
+            *cursor = atual + 1; // Próxima leitura começa depois da vírgula
+            return inicio;
+        }
+        // Tratamento de fim de linha (\n ou \r)
+        else if ((*atual == '\n' || *atual == '\r') && !dentro_aspas) {
+             *atual = '\0';
+             *cursor = NULL; // Indica que a linha acabou
+             // Remove aspa final se houver (caso: ..."Texto"\n)
+             if (atual > inicio && *(atual-1) == '"') *(atual-1) = '\0';
+                return inicio;
+        }
+        atual++;
+    }
+    // Se chegou no fim da string sem achar virgula
+    *cursor = NULL;
+    return inicio;
 }
 
 //Funçao que verifica se o ID ja existe na ediçao
@@ -119,19 +167,27 @@ int main()
         printf("Não foi possível executar o arquivo");
         return 1;
     }
-    char linha[2000];
+    char linha[4000];
+    char linhaTemp[4000]; //Crio uma cópia da linha para evitar problemas com o strtok
     int anosVerao[10] = {0}; //Array que guarda os anos das ediçoes de verão
     int anosInverno[10] = {0}; //Array que guarda os anos das ediçoes de inverno
     while(fgets(linha, sizeof(linha), arquivo)){ //Enquanto houver linhas no arquivo o programa continua lendo e preenchendo os arrays
+        char* cursor = linha;
         int col = 0;
         int ano = 0;
-        char linhaTemp[2000];
-        strcpy(linhaTemp, linha); //Crio uma cópia da linha para evitar problemas com o strtok
         char tipo[15] = "";
-        char* token = strtok(linha, ",");
-        if(token != NULL){
-            sscanf(token, "%d %9s", &ano, tipo); //Pego o ano e o tipo da olimpíada
-        } if(ano > 1800){ //Verifico se o ano é válido para evitar lixo na memória, por garantia
+        char* token;
+        int ehYouth = 0; //Variável que verifica se a ediçao é Youth, caso seja, ela nao conta para o total de ediçoes
+        while((token = ler_campo(&cursor)) != NULL){
+            if(col == 0){
+                if(strstr(token, "Youth") != NULL) {
+                    ehYouth = 1;
+                }
+                sscanf(token, "%d %s", &ano, tipo);
+            }
+            col++;
+        }
+        if(ano > 1800 && !ehYouth){ //Verifico se o ano é válido para evitar lixo na memória, por garantia e também verifico se a edição não é Youth
             if(strstr(tipo, "Summer") != NULL){
                 insereAno(anosVerao, ano); //Chamo a funçao que insere o ano no array de anos de verão
             }
@@ -147,25 +203,24 @@ int main()
         int ano = 0;
         int id = 0;
         char tipo[15] = "";
-        char* token = strtok(linha, ",");
-        while(token != NULL){ //O código aqui é similar ao anterior só que agora chamo a funçao que adiciona os IDs
+        char* token;
+        char* cursor = linha;
+        int ehYouth = 0; //Variável que verifica se a ediçao é Youth, caso seja, ela nao conta para o total de ediçoes
+        while((token = ler_campo(&cursor)) != NULL){ //O código aqui é similar ao anterior só que agora chamo a funçao que adiciona os IDs
             if(col == 0){
-                ano = atoi(token); 
-                if (strstr(token, "Summer")) strcpy(tipo, "Summer");
-                else if (strstr(token, "Winter")) strcpy(tipo, "Winter");
-                else strcpy(tipo, "");
+                if(strstr(token, "Youth") != NULL) {
+                    ehYouth = 1;
+                }
+                sscanf(token, "%d %s", &ano, tipo);
             }
             else if(col == 6){
                 id = atoi(token);
             }
             col++;
-            token = strtok(NULL, ",");
         }
-        if(strstr(tipo, "Summer") != NULL && anovalido(anosVerao, ano)){ //Verifico se o tipo é verão e se o ano é válido
-            processarAtleta(verao, ano, id, tipo); //Chamo a funçao que processa o atleta para adicionar o ID na ediçao correspondente
-        }
-        else if(strstr(tipo, "Winter") != NULL && anovalido(anosInverno, ano)){
-            processarAtleta(inverno, ano, id, tipo);
+        if(ano > 0 && id > 0 && !ehYouth){
+            if(strstr(tipo, "Summer") && anovalido(anosVerao, ano)) processarAtleta(verao, ano, id, tipo);
+            else if(strstr(tipo, "Winter") && anovalido(anosInverno, ano)) processarAtleta(inverno, ano, id, tipo);
         }
     }
     fclose(arquivo); //Fecho o arquivo após o uso, é uma boa prática para liberar recursos do sistema
@@ -178,6 +233,7 @@ int main()
             printf("Ano: %d, Quantidade de Atletas: %d\n", verao[i].ano, verao[i].qtdAtletas);
         }
     }
+    printf("\n");
     printf("Evolução | Olimpíadas de Inverno:\n");
     for(int i = 0; i < 10; i++){
         if(inverno[i].ano != 0){
