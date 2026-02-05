@@ -58,14 +58,14 @@ int main () {
         
         // Verificação de segurança caso falte memória RAM.
         if ( bd_atletas == NULL || lista_final == NULL ) {
-            printf( "ERRO: Falha na alocacao de memoria. Tente Reduzir os valores MAX\n");
+            printf( "\nERRO: Falha na alocacao de memoria. Tente Reduzir os valores MAX\n");
             return 1;
         }
     //
 
 
     // === LEITURA DOS ATLETAS:
-        printf( "Lendo arquivo de atletas..." );
+        printf( "\nLendo arquivo de atletas..." );
         int qtd_atletas = carregar_atletas("../Banco de Dados/bios.csv", bd_atletas);
 
         if ( qtd_atletas <= 0 ) {
@@ -74,23 +74,23 @@ int main () {
             free(lista_final);
             return 1;
         }
-        printf( "Exito! (%d registros carregados)\n", qtd_atletas );
+        printf( "\nExito! (%d registros carregados)\n", qtd_atletas );
     //
 
 
     // === PROCESSAMENTO E CRUZAMENTO DE DADOS (JOIN):
-        printf( "Lendo arquivo de resultados e cruzando os dados..." );
+        printf( "\nLendo arquivo de resultados e cruzando os dados..." );
         int qtd_medalhistas = processar_resultados("../Banco de Dados/results.csv", bd_atletas, lista_final);
 
         if ( qtd_medalhistas == 0 ) {
-            printf( "AVISO: Nenhum medalhista encontrado. Verifique os filtros de leitura.\n");
+            printf( "\nAVISO: Nenhum medalhista encontrado. Verifique os filtros de leitura.\n");
 
         } else {
-            printf( "Exito! (%d medalhas processadas)\n", qtd_medalhistas );
+            printf( "\nExito! (%d medalhas processadas)\n", qtd_medalhistas );
 
-            printf( "Ordenando ranking por idade..." );
+            printf( "\nOrdenando ranking por idade... " );
             ordenar_medalhistas(lista_final, qtd_medalhistas);
-            printf( "Concluido.\n" );
+            printf( "Concluido:\n" );
 
             exibir_ranking_idade(lista_final, qtd_medalhistas, 10);
         }
