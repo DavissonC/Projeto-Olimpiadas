@@ -23,24 +23,27 @@ void insereAno(int *anos, int ano);
 int verificarId(EdicaoPadrao* ed, int id);
 
 void insereAno(int *anos, int ano) { //Funçao que insere o ano no array de anos, se ja existir, nao insere novamente
-    for (int i = 0; i < 10; i++)
-        if (anos[i] == ano)
-            return; // já existe
+    //Verifica se o ano já existe no array para não duplicar
+    for (int i = 0; i < 10; i++) {
+        if (anos[i] == ano) return;
+    }
+    //Procura um slot vazio (0)
     for (int i = 0; i < 10; i++) {
         if (anos[i] == 0) {
             anos[i] = ano;
             return;
         }
     }
-    // encontra o menor
-    int min = 0;
-    for (int i = 1; i < 10; i++){ //A lógica aqui é encontrar o menor ano e substituí-lo se o novo ano for maior
-        if (anos[i] < anos[min]){ //Isso garante que sempre teremos os 10 anos mais recentes
-            min = i;
+    //Se o array está cheio, encontra o índice do MENOR ano atual
+    int indiceMenor = 0;
+    for (int i = 1; i < 10; i++) {
+        if (anos[i] < anos[indiceMenor]) {
+            indiceMenor = i;
         }
-        if (ano > anos[min]){
-            anos[min] = ano;
-        }
+    }
+    //Se o ano lido for MAIOR que o menor ano guardado, substitui
+    if (ano > anos[indiceMenor]) {
+        anos[indiceMenor] = ano;
     }
 }
 
@@ -88,7 +91,6 @@ void processarAtleta(EdicaoPadrao* arrayEdicoes, int ano, int id, char* tipo){
             }
         }
     }
-
     // Se não achou lugar (teoricamente impossível se a lógica do anovalido estiver certa), retorna
     if (indexEdicao == -1) return;
 
@@ -148,7 +150,10 @@ int main()
         char* token = strtok(linha, ",");
         while(token != NULL){ //O código aqui é similar ao anterior só que agora chamo a funçao que adiciona os IDs
             if(col == 0){
-                sscanf(token, "%d %9s", &ano, tipo);
+                ano = atoi(token); 
+                if (strstr(token, "Summer")) strcpy(tipo, "Summer");
+                else if (strstr(token, "Winter")) strcpy(tipo, "Winter");
+                else strcpy(tipo, "");
             }
             else if(col == 6){
                 id = atoi(token);
