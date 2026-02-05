@@ -7,7 +7,7 @@
 #include <math.h>
 #include <windows.h>
 
-// Calcula os 10 atletas mais jovens com pior colocação de todos os jogos olímpicos
+// Calcula os 10 atletas mais jovens com pior colocação de todos os jogos olímpicos, separados por sexo
 
 // Dados de cada atleta (nome, país, gênero, pior posição)
 typedef struct
@@ -15,7 +15,7 @@ typedef struct
     char name[256];    // Used Name
     char country[100]; // NOC
     char sex[12];      // Sex
-    char born[50];     
+    char born[50]; 
     char game[50];     // Games
     char sport[50];    // Discipline
     int id;            // athlete_id
@@ -35,13 +35,13 @@ void ObterCampo(char *line, int column, char *destiny);
 int CalculaPioresAtletasNovos(Athlete *mascAthletes, Athlete *femAthletes, int *biggestResults, int *preenchidos, Athlete nextAthlete);
 int AlteraListaDosPiores(Athlete *athletesList, Athlete athlete, int *biggestResults, int *preenchidos);
 int CalculaResultados(int age, int position, int maxPosInSport);
-int CompararAtletasPorID(const void *a, const void *b);
 int ExtrairAno(char *str);
 
 int main()
 {
     // Tenta forçar o terminal a usar a configuração UTF-8
-    if (!setlocale(LC_ALL, "en_US.UTF-8")) {
+    if (!setlocale(LC_ALL, "en_US.UTF-8")) 
+    {
         setlocale(LC_ALL, "pt_BR.UTF-8"); // Tenta português se falhar
     }
 
@@ -60,7 +60,6 @@ int main()
     // Lista para armazenar todos os atletas
     int actualLimit = 150000;
     Athlete *allAthletes = calloc(actualLimit, sizeof(Athlete));
-    int athletesCount = 0;
 
     // Maiores resultados armazenados nas listas
     int biggestResults[2] = {1000000, 1000000};
@@ -100,12 +99,11 @@ int main()
             strcpy(allAthletes[id - 1].country, Country);
             
             allAthletes[id - 1].id = id;
-            // Usamos o campo results para guardar o ano de nascimento temporariamente
+            // Guardamos o ano de nascimento para uso posterior
             allAthletes[id - 1].birth_year = anoNasc; 
             allAthletes[id - 1].age = 200;      // Inicializa com idade alta
-            allAthletes[id - 1].position = 0;    // Inicializa com posição 0 (aumentará para a "pior colocada")
+            allAthletes[id - 1].position = 0;    // Inicializa com posição 0
         }
-        athletesCount++;
     }   
 
     fclose(bios);
@@ -119,7 +117,8 @@ int main()
         return 1;
     }
 
-    rewind(results); // Volta ao início se já tiver aberto
+    // PASSO ZERO: Mapear a pior posição de cada esporte para normalização
+    rewind(results); 
     fgets(buffer, sizeof(buffer), results); 
 
     while(fgets(buffer, sizeof(buffer), results)) 
@@ -133,14 +132,13 @@ int main()
             continue; // Pula DNS, DNF, AC
 
         char *ptrPos = Pos;
-
         if (*ptrPos == '=') 
             ptrPos++;
 
         int posInt = atoi(ptrPos);
 
-        if (posInt > 0) {
-            // Busca simples no array de esportes
+        if (posInt > 0) 
+        {
             int found = -1;
             for (int i = 0; i < sportCount; i++) 
             {
@@ -148,12 +146,11 @@ int main()
                 {
                     if (posInt > sports[i].maxPos) 
                         sports[i].maxPos = posInt;
-
                     found = i;
                     break;
                 }
             }
-            if (found == -1 && sportCount < 300) 
+            if (found == -1 && sportCount < actualDisciplinesLimit) 
             {
                 strcpy(sports[sportCount].name, Sport);
                 sports[sportCount].maxPos = posInt;
@@ -162,6 +159,7 @@ int main()
         }
     }
 
+    // PASSO UM: Processar as idades e piores posições individuais
     rewind(results);
     fgets(buffer, sizeof(buffer), results);
 
@@ -180,19 +178,17 @@ int main()
             int anoOlimpiada;
             sscanf(Games, "%d", &anoOlimpiada);
             
-            // Limpa o '=' da posição se existir
             char *ptrPos = Pos;
             if (*ptrPos == '=') ptrPos++;
             int posInt = atoi(ptrPos);
 
-            // Recupera ano salvo no loop anterior
             int anoNasc = allAthletes[id - 1].birth_year; 
 
             if(anoNasc > 0 && posInt > 0)
             {
                 int idadeNaEpoca = anoOlimpiada - anoNasc;
                 
-                // Se o atleta era mais jovem nesta olimpíada do que na registrada anteriormente
+                // Se o atleta era mais jovem nesta olimpíada
                 if(idadeNaEpoca < allAthletes[id - 1].age)
                 {
                     allAthletes[id - 1].age = idadeNaEpoca;
@@ -209,14 +205,16 @@ int main()
         }
     }
 
+    // PASSO DOIS: Calcular scores e preencher os Rankings
     for(int i = 0; i < actualLimit; i++)
     {
         if(allAthletes[i].age < 200 && allAthletes[i].position > 0)
         {
-            // Busca o maxPos para o esporte que deu a pior posição a este atleta
             int mPos = 1;
-            for(int j = 0; j < sportCount; j++) {
-                if(strcmp(sports[j].name, allAthletes[i].sport) == 0) {
+            for(int j = 0; j < sportCount; j++) 
+            {
+                if(strcmp(sports[j].name, allAthletes[i].sport) == 0) 
+                {
                     mPos = sports[j].maxPos;
                     break;
                 }
@@ -228,14 +226,14 @@ int main()
         }
     }
 
-
     printf("\n%s\n", "==============================================================================================================================================================");
     printf("                                              TOP 10 ATLETAS MAIS NOVOS E PIORES COLOCADOS - MASCULINO                                              \n");
     printf("%s\n", "==============================================================================================================================================================");
-    printf("%-3s | %-30s | %-5s | %-4s | %-25s | %-20s | %s\n", "Rank", "Atleta", "Idade", "Pos", "Pa\u00eds", "Olimp\u00edada", "Disciplina");
+    printf("%-4s | %-30s | %-5s | %-4s | %-25s | %-20s | %s\n", "Rank", "Atleta", "Idade", "Pos", "País", "Olimpíada", "Disciplina");
     printf("%s\n", "--------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
-    for(int i = 0; i < atletasPreenchidos[0]; i++) {
+    for(int i = 0; i < atletasPreenchidos[0]; i++) 
+    {
         printf("%02d   | %-30.30s | %-5d | %-4d | %-25.25s | %-20.20s | %s\n", 
                i + 1, 
                mascAthletes[i].name, 
@@ -246,14 +244,14 @@ int main()
                mascAthletes[i].sport);
     }
 
-  
     printf("\n%s\n", "==============================================================================================================================================================");
     printf("                                              TOP 10 ATLETAS MAIS NOVOS E PIORES COLOCADOS - FEMININO                                               \n");
     printf("%s\n", "==============================================================================================================================================================");
-    printf("%-3s | %-30s | %-5s | %-4s | %-25s | %-20s | %s\n", "Rank", "Atleta", "Idade", "Pos", "Pa\u00eds", "Olimp\u00edada", "Disciplina");
+    printf("%-4s | %-30s | %-5s | %-4s | %-25s | %-20s | %s\n", "Rank", "Atleta", "Idade", "Pos", "País", "Olimpíada", "Disciplina");
     printf("%s\n", "--------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
-    for(int i = 0; i < atletasPreenchidos[1]; i++) {
+    for(int i = 0; i < atletasPreenchidos[1]; i++) 
+    {
         printf("%02d   | %-30.30s | %-5d | %-4d | %-25.25s | %-20.20s | %s\n", 
                i + 1, 
                femAthletes[i].name, 
@@ -264,98 +262,74 @@ int main()
                femAthletes[i].sport);
     }
     printf("%s\n", "==============================================================================================================================================================");
-    fclose(results);
 
+    fclose(results);
     free(allAthletes);
     free(sports);
     return 0;
 }
 
-int CalculaPioresAtletasNovos(Athlete *mascAthletes, Athlete *femAthletes, int *biggestResults, int *preenchidos, Athlete nextAthlete)
-{
-    if(strcmp(nextAthlete.sex, "Male") == 0)
-    {
-        if(nextAthlete.results < *biggestResults)
-        {
-            AlteraListaDosPiores(mascAthletes, nextAthlete, biggestResults, preenchidos);
-        }
-    }
-    else
-    {
-        if(nextAthlete.results < *(biggestResults + 1))
-        {
-            AlteraListaDosPiores(femAthletes, nextAthlete, biggestResults + 1, preenchidos + 1);
-        }
-    }
-    return 0;
-}
-
-int AlteraListaDosPiores(Athlete *athletesList, Athlete athlete, int *biggestResults, int *preenchidos)
-{
-    // Se todas os espaços ainda não tiverem sido preenchidos, preenche-os
-    if (*preenchidos < 10)
-    {
-        *(athletesList + *preenchidos) = athlete;
-        *preenchidos += 1;
-    }
-    // Senão, substitui o de maior pontuação (último da lista)
-    else
-    {
-        *(athletesList + 9) = athlete;
-    }
-
-    // Reorganiza a lista para que esteja em ordem crescente de pontuação
-    for (int i = 0; i < *preenchidos - 1; i++) {
-        for (int j = 0; j < *preenchidos - i - 1; j++) {
-
-            // Se o resultado do próximo for menor, ele é "pior" e deve subir (ordenar crescente)
-            if (athletesList[j].results > athletesList[j + 1].results) {
-                Athlete temp = athletesList[j];
-                athletesList[j] = athletesList[j + 1];
-                athletesList[j + 1] = temp;
-            }
-        }
-    }
-
-    if (*preenchidos == 10) 
-    {
-        *biggestResults = athletesList[9].results;
-    }
-    else  
-    {
-        *biggestResults = 1000000; // Garante entrada até encher o Top 10
-    }
-
-    return 0;
-}
-
-int CalculaResultados(int age, int position, int maxPosInSport)
+int CalculaResultados(int age, int position, int maxPosInSport) 
 {
     if (maxPosInSport <= 0) maxPosInSport = 1; 
-
-    // Ponto de Transição (Média)
     double meio = maxPosInSport / 2.0;
-
-    // Cálculo da "Distância da Média" (Normalizada entre -1.0 e 1.0)
-    double distanciaRelativa = (position - meio) / meio;
-
-    // Aplicação Exponencial (Quadrática que preserva o sinal)
-    double impactoPosicao = distanciaRelativa * fabs(distanciaRelativa);
-
-    // 4. Score Final
-    double score = (age * 100.0) - (impactoPosicao * 500.0) - (log10(maxPosInSport) * 150.0);
-
+    double distRelativa = (position - meio) / meio;
+    double impPos = distRelativa * fabs(distRelativa);
+    // Fórmula final equilibrada para idade, posição e tamanho do esporte
+    double score = (age * 100.0) - (impPos * 500.0) - (log10(maxPosInSport) * 150.0);
     return (int)score;
 }
 
-int CompararAtletasPorID(const void *a, const void *b) 
+int CalculaPioresAtletasNovos(Athlete *mascAthletes, Athlete *femAthletes, int *biggestResults, int *preenchidos, Athlete nextAthlete) 
 {
-    return ((Athlete *)a)->id - ((Athlete *)b)->id;
+    // Divisão por sexo dos atletas
+    if(strcmp(nextAthlete.sex, "Male") == 0) 
+    {
+        if(nextAthlete.results < biggestResults[0]) 
+            AlteraListaDosPiores(mascAthletes, nextAthlete, &biggestResults[0], &preenchidos[0]);
+    } 
+    else 
+    {
+        if(nextAthlete.results < biggestResults[1]) 
+            AlteraListaDosPiores(femAthletes, nextAthlete, &biggestResults[1], &preenchidos[1]);
+    }
+    return 0;
 }
 
-int ExtrairAno(char *string) {
-    int ano = 0;
+int AlteraListaDosPiores(Athlete *list, Athlete athlete, int *biggestResults, int *preenchidos) 
+{
+    // Se todos os espaços ainda não tiverem sido preenchidos, preenche-os
+    if (*preenchidos < 10) 
+    {
+        list[*preenchidos] = athlete;
+        (*preenchidos)++;
+    } 
+    // Senão, substitui o de maior pontuação (último da lista)
+    else 
+    {
+        list[9] = athlete;
+    }
 
+    // Reorganiza a lista para que esteja em ordem crescente de pontuação (Bubble Sort)
+    for (int i = 0; i < *preenchidos - 1; i++) 
+    {
+        for (int j = 0; j < *preenchidos - i - 1; j++) 
+        {
+            if (list[j].results > list[j + 1].results) 
+            {
+                Athlete temp = list[j];
+                list[j] = list[j + 1];
+                list[j + 1] = temp;
+            }
+        }
+    }
+    if (*preenchidos == 10) *biggestResults = list[9].results;
+    return 0;
+}
+
+int ExtrairAno(char *string) 
+{
+    int ano = 0;
     for (int i = 0; string[i] != '\0'; i++) 
     {
         if (isdigit(string[i]) && isdigit(string[i+1]) && isdigit(string[i+2]) && isdigit(string[i+3])) 
@@ -370,30 +344,20 @@ int ExtrairAno(char *string) {
 void ObterCampo(char *line, int column, char *destiny) 
 {
     int actualColumn = 0, i = 0, j = 0, entreAspas = 0;
-
     while (line[i] != '\0' && actualColumn <= column) 
     {
         if (line[i] == '\"') 
-        {    
-            entreAspas = !entreAspas;
+        { 
+            entreAspas = !entreAspas; 
         }
-
         else if (line[i] == ',' && !entreAspas) 
         {
-            if (actualColumn == column) 
-            {
-                break;
-            }
+            if (actualColumn == column) break;
             actualColumn++; j = 0;
         } 
-
         else if (actualColumn == column) 
         {
-            if (line[i] != '\n' && line[i] != '\r')
-            {
-             
-                destiny[j++] = line[i];
-            }
+            if (line[i] != '\n' && line[i] != '\r') destiny[j++] = line[i];
         }
         i++;
     }
