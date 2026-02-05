@@ -55,3 +55,6 @@ dkms.conf
 *.dwo
 bios.csv
 results.csv
+
+# Q19 (versão original)
+questao_19_versao_original
