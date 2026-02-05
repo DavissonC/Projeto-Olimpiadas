@@ -60,27 +60,24 @@ void ordenaredicoes(EdicaoPadrao* arrayEdicoes, int tamanho) { //Funçao que ord
     }
 }
 
-// Esta função pega o texto até a próxima vírgula, retornando vazio se não tiver nada
+//Esta função pega o texto até a próxima vírgula, retornando vazio se não tiver nada, ela vai servir para ler os campos do CSV corretamente, mesmo que tenham aspas ou vírgulas internas, tratando esses casos especiais
 char* ler_campo(char** cursor) {
     char* inicio = *cursor;
     if (inicio == NULL) return NULL;
-
     char* atual = inicio;
     int dentro_aspas = 0;
 
-    // Se o campo começa com aspas, pulamos a aspa inicial
+    //Se o campo começa com aspas, pulamos a aspa inicial
     if (*atual == '"') {
         dentro_aspas = 1;
         inicio++; 
         atual++;
     }
-
     while (*atual != '\0') {
-        // Se achou outra aspa, inverte o estado (abre/fecha)
+        //Se achou outra aspa, inverte o estado (abre/fecha)
         if (*atual == '"') {
             // Verifica se é aspa dupla ("") que conta como aspa literal, ou fechamento
-            // Para simplificar neste exercício, assumimos que fecha o campo ou é parte do texto
-            // Mas o importante é que só vamos parar na virgula se dentro_aspas for 0
+            //É importante que só vamos parar na virgula se dentro_aspas for 0
             if (dentro_aspas && *(atual+1) == ',') {
                dentro_aspas = 0; // Vai fechar na proxima checagem
                *atual = '\0'; // Remove a aspa final
@@ -119,7 +116,7 @@ int verificarId(EdicaoPadrao* ed, int id){
 
 void processarAtleta(EdicaoPadrao* arrayEdicoes, int ano, int id, char* tipo){
     int indexEdicao = -1;
-
+    
     //Tenta encontrar a edição já existente no array
     for(int i = 0; i < 10; i++){
         if(arrayEdicoes[i].ano == ano){
