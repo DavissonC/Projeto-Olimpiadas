@@ -13,6 +13,8 @@ typedef struct{
 EdicaoPadrao verao[10];
 EdicaoPadrao inverno[10];
 
+//Por boa prática divido as açoes da funçao principal em outras funçoes mais especificas
+
 
 void insereAno(int *anos, int ano) {
     for (int i = 0; i < 10; i++)
@@ -37,7 +39,6 @@ void insereAno(int *anos, int ano) {
 }
 
 
-//Por boa prática divido as açoes da funçao principal em outra funçao mais especifica
 //Funçao que verifica se o ID ja existe na ediçao
 int verificarId(EdicaoPadrao* ed, int id){
     for(int i = 0; i < 10; i++){
@@ -74,6 +75,8 @@ void addIds(EdicaoPadrao* ed, int ano, int id, char* tipo){
 }
 
 
+
+
 int main()
 {
     FILE* arquivo = fopen("results.csv","r"); //Por segurança verifico se o ponteiro nao está pegando lixo na memória
@@ -81,7 +84,12 @@ int main()
         printf("Não foi possível executar o arquivo");
         return 1;
     }
-    EdicaoPadrao verao[10]; //Pego a estrutura de uma unica ediçao de olimpiada e divido, depois preencho um array de tamanho 10
-    EdicaoPadrao inverno[10];
+    char linha[2000];
+    int anosVerao[10] = {0}; //Array que guarda os anos das ediçoes de verão
+    int anosInverno[10] = {0}; //Array que guarda os anos das ediçoes de inverno
+    EdicaoPadrao verao[10] = {0}; //Pego a estrutura de uma unica ediçao de olimpiada e divido, depois preencho um array de tamanho 10
+    EdicaoPadrao inverno[10] = {0};
+    while(fgets(linha, sizeof(linha), arquivo)){ //Enquanto houver linhas no arquivo}
 
+    }
 }
