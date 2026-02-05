@@ -10,7 +10,7 @@ typedef struct {
 typedef struct {
     int ano;
     int id;
-    char estacao[10];
+    char estacao[30];
 } Registro; //Struct que será utilizado para ordenação
 
 int compararRegistros(const void *ptrGenericoA, const void *ptrGenericoB) {
@@ -51,18 +51,21 @@ int main() {
     //Lê a primeira linha (cabeçalho) e não faz nada com ela
     fgets(linha, sizeof(linha), arquivo);
 
-    //Falta considerar que as colunas que eu preciso não estão em sequência
     while (fgets(linha, sizeof(linha), arquivo) && totalLido < totalLinhas) {
-        char *tokenAno = strtok(linha, ","); //Lê o ano
-        if (tokenAno == NULL) continue;
-        totalRegistros[totalLido].ano = atoi(tokenAno); //Transforma string para int
+        char *tokenOlimpiada = strtok(linha, ","); 
+        if (tokenOlimpiada == NULL) continue;
+        
+        sscanf(tokenOlimpiada, "%d %[^\n]", &totalRegistros[totalLido].ano, totalRegistros[totalLido].estacao); //Ano e estação estão na mesma coluna e o sscanf divide e armazena separado
 
-        char *tokenEstacao = strtok(NULL, ","); //Lê a estação
-        strcpy(totalRegistros[totalLido].estacao, tokenEstacao);
+        strtok(NULL, ","); //pula as colunas que ficam entre as desejadas
+        strtok(NULL, ","); 
+        strtok(NULL, ","); 
+        strtok(NULL, ",");
+        strtok(NULL, ",");
+        //Preciso considerar virgulas dentro de colunas e colunas em branco
 
         char *tokenID = strtok(NULL, ","); //Lê o ID do atleta
-        totalRegistros[totalLido].id = atoi(tokenID);
-        
+        totalRegistros[totalLido].id = atoi(tokenID);  
         totalLido++;
     }
     fclose(arquivo);
@@ -74,7 +77,7 @@ int main() {
         char *estacao = totalRegistros[i].estacao;
         int id = totalRegistros[i].id;
 
-        if (strcmp(estacao, "Summer") == 0) {
+        if (strcmp(estacao, "Summer Olympics") == 0) {
             if (ano != anoAnteriorVerao && totalVerao < 10) { //Verifica se não é o mesmo ano e se a quantidade de anos desejada(10) não foi atingida
                 verao[totalVerao].ano = ano; //Guarda o ano
                 verao[totalVerao].qtdAtletas = 1; // Começa a contagem
@@ -88,7 +91,7 @@ int main() {
                 } //A quantidade de atletas só será incrementada se for um atleta diferente
             }
         }
-        if (strcmp(estacao, "Winter") == 0) { //Alteração do trecho de cima para as Olimpíadas de inverno
+        if (strcmp(estacao, "Winter Olympics") == 0) { //Alteração do trecho de cima para as Olimpíadas de inverno
             if (ano != anoAnteriorInverno && totalInverno < 10) { 
                 inverno[totalInverno].ano = ano;
                 inverno[totalInverno].qtdAtletas = 1;
@@ -104,7 +107,17 @@ int main() {
         }
     }
 
-    // Liberação da memória e exibição (Opcional adicionar printf aqui)
-    free(totalRegistros);
+    
+    printf("Verao:\n");
+    for(int i = 0; i < totalVerao; i++) {
+        printf("Olimpiadas de %d: %d atletas\n", verao[i].ano, verao[i].qtdAtletas);
+    }
+
+    printf("\nInverno:\n");
+    for(int i = 0; i < totalInverno; i++) {
+        printf("Olimpiadas de %d: %d atletas\n", inverno[i].ano, inverno[i].qtdAtletas);
+    }
+
+    free(totalRegistros); // Libera a memória
     return 0;
 }
