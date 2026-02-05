@@ -1,3 +1,6 @@
+//Calcule quantos atletas participaram das primeiras 10 edições dos Jogos Olímpicos e analise a evolução
+//desse número ao longo do tempo, separando Verão e Inverno.
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -25,6 +28,28 @@ int compararRegistros(const void *ptrGenericoA, const void *ptrGenericoB) {
     return (registroAtletaA->id - registroAtletaB->id); // Se os anos forem iguais, compara o ID do atleta
 } //Função de comparação para o qsort, usando ano e ID
 
+void pegarColuna(char *linha, int colunaAlvo, char *resultado) { //Pega uma coluna específica e ignora virgulas entre aspas
+    int colunaAtual = 0;
+    int dentroDeAspas = 0; //Se for 0, está fora das aspas. Se for 1, está dentro das aspas
+    int j = 0;
+
+    for (int i = 0; linha[i] != '\0'; i++) { //Percorre até o fim da linha
+        if (linha[i] == '\"') {
+            dentroDeAspas = !dentroDeAspas; //Muda o valor a cada aspas
+        } 
+        else if (linha[i] == ',' && !dentroDeAspas) {
+            if (colunaAtual == colunaAlvo) {
+                break;
+            } //Para o código se já processou a coluna desejada
+            colunaAtual++; //Passa pra próxima coluna se não estiver na desejada
+        } 
+        else if (colunaAtual == colunaAlvo) {
+            resultado[j++] = linha[i]; //Salva os char lidos em sequência
+        }
+    }
+    resultado[j] = '\0'; //Põe o char nulo no final do array
+}
+
 int main() {
     FILE *arquivo = fopen("results.csv", "r");
     // Abre o arquivo e verifica se abriu corretamente
@@ -48,26 +73,21 @@ int main() {
     int idAnteriorVerao = -1;
     int idAnteriorInverno = -1;
 
-    //Lê a primeira linha (cabeçalho) e não faz nada com ela
-    fgets(linha, sizeof(linha), arquivo);
+    fgets(linha, sizeof(linha), arquivo); // Lê o cabeçalho e não faz nada com ele
 
     while (fgets(linha, sizeof(linha), arquivo) && totalLido < totalLinhas) {
-        char *tokenOlimpiada = strtok(linha, ","); 
-        if (tokenOlimpiada == NULL) continue;
+        char tokenOlimpiada[100], tokenID[50];
+
+        pegarColuna(linha, 0, tokenOlimpiada);  //Coluna 0 tem ano e estação
         
-        sscanf(tokenOlimpiada, "%d %[^\n]", &totalRegistros[totalLido].ano, totalRegistros[totalLido].estacao); //Ano e estação estão na mesma coluna e o sscanf divide e armazena separado
+        pegarColuna(linha, 6, tokenID); // Coluna 6 tem o ID do Atleta
 
-        strtok(NULL, ","); //pula as colunas que ficam entre as desejadas
-        strtok(NULL, ","); 
-        strtok(NULL, ","); 
-        strtok(NULL, ",");
-        strtok(NULL, ",");
-        //Preciso considerar virgulas dentro de colunas e colunas em branco
-
-        char *tokenID = strtok(NULL, ","); //Lê o ID do atleta
-        totalRegistros[totalLido].id = atoi(tokenID);  
+        sscanf(tokenOlimpiada, "%d %[^\n]", &totalRegistros[totalLido].ano, totalRegistros[totalLido].estacao);
+        
+        totalRegistros[totalLido].id = atoi(tokenID);
         totalLido++;
     }
+
     fclose(arquivo);
 
     qsort(totalRegistros, totalLido, sizeof(Registro), compararRegistros);  //ordena por Ano e ID
@@ -88,7 +108,7 @@ int main() {
                 if (id != idAnteriorVerao) {
                     verao[totalVerao - 1].qtdAtletas++;
                     idAnteriorVerao = id;
-                } //A quantidade de atletas só será incrementada se for um atleta diferente
+                } //A quantidade de atletas só será incrementada se for um atleta diferente (com base no ID)
             }
         }
         if (strcmp(estacao, "Winter Olympics") == 0) { //Alteração do trecho de cima para as Olimpíadas de inverno
