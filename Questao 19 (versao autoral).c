@@ -31,10 +31,10 @@ typedef struct
 
 // Funções de Processamento Modularizadas
 void ConfigurarTerminal();
-void CarregarBiografias(Athlete *allAthletes, int actualLimit);
-int MapearPiorPosicaoEsportes(DisciplineStats *disciplines, int actualDisciplinesLimit);
-void ProcessarResultadosIndividuais(Athlete *allAthletes, int actualLimit);
-void CalcularRankingsFinais(Athlete *allAthletes, int actualLimit, DisciplineStats *disciplines, int disciplinesQuantity, Athlete *athletesMasc, Athlete *athletesFem, int *cuttingResults, int *filledAthletes);
+void CarregarBiografias(Athlete *allAthletes, int athletesLimit);
+int MapearPiorPosicaoEsportes(DisciplineStats *disciplines, int disciplinesLimit);
+void ProcessarResultadosIndividuais(Athlete *allAthletes, int athletesLimit);
+void CalcularRankingsFinais(Athlete *allAthletes, int athletesLimit, DisciplineStats *disciplines, int disciplinesQuantity, Athlete *athletesMasc, Athlete *athletesFem, int *cuttingResults, int *filledAthletes);
 void ExibirResultados(Athlete *athletesMasc, Athlete *athletesFem, int *filledAthletes);
 
 // Funções Utilitárias e de Lógica
@@ -96,7 +96,7 @@ void ConfigurarTerminal()
     SetConsoleCP(65001);
 }
 
-void CarregarBiografias(Athlete *allAthletes, int actualLimit)
+void CarregarBiografias(Athlete *allAthletes, int athletesLimit)
 {
     FILE *bios = fopen("bios.csv", "r");
 
@@ -126,7 +126,7 @@ void CarregarBiografias(Athlete *allAthletes, int actualLimit)
         NormalizarString(Country);
 
         int id = atoi(ID);
-        if (id > 0 && id <= actualLimit)
+        if (id > 0 && id <= athletesLimit)
         {
             int anoNasc = ExtrairAno(Born);
             
@@ -144,7 +144,7 @@ void CarregarBiografias(Athlete *allAthletes, int actualLimit)
     fclose(bios);
 }
 
-int MapearPiorPosicaoEsportes(DisciplineStats *disciplines, int actualDisciplinesLimit)
+int MapearPiorPosicaoEsportes(DisciplineStats *disciplines, int disciplinesLimit)
 {
     // Mapear a pior posição de cada esporte para normalização
     FILE *results = fopen("results.csv", "r");
@@ -180,7 +180,8 @@ int MapearPiorPosicaoEsportes(DisciplineStats *disciplines, int actualDiscipline
                     break;
                 }
             }
-            if (found == -1 && disciplinesQuantity < actualDisciplinesLimit) 
+            
+            if (found == -1 && disciplinesQuantity < disciplinesLimit) 
             {
                 strcpy(disciplines[disciplinesQuantity].name, Discipline);
                 disciplines[disciplinesQuantity].maxPos = posInt;
@@ -192,7 +193,7 @@ int MapearPiorPosicaoEsportes(DisciplineStats *disciplines, int actualDiscipline
     return disciplinesQuantity;
 }
 
-void ProcessarResultadosIndividuais(Athlete *allAthletes, int actualLimit)
+void ProcessarResultadosIndividuais(Athlete *allAthletes, int athletesLimit)
 {
     // Processar as idades e piores posições individuais
     FILE *results = fopen("results.csv", "r");
@@ -215,7 +216,7 @@ void ProcessarResultadosIndividuais(Athlete *allAthletes, int actualLimit)
         ObterCampo(buffer, 8, Sport); // Discipline
 
         int id = atoi(ID);
-        if(id > 0 && id <= actualLimit)
+        if(id > 0 && id <= athletesLimit)
         {
             int anoOlimpiada;
             sscanf(Games, "%d", &anoOlimpiada);
@@ -248,10 +249,10 @@ void ProcessarResultadosIndividuais(Athlete *allAthletes, int actualLimit)
     fclose(results);
 }
 
-void CalcularRankingsFinais(Athlete *allAthletes, int actualLimit, DisciplineStats *disciplines, int disciplinesQuantity, Athlete *athletesMasc, Athlete *athletesFem, int *cuttingResults, int *filledAthletes)
+void CalcularRankingsFinais(Athlete *allAthletes, int athletesLimit, DisciplineStats *disciplines, int disciplinesQuantity, Athlete *athletesMasc, Athlete *athletesFem, int *cuttingResults, int *filledAthletes)
 {
     // Calcular scores e preencher os Rankings
-    for(int i = 0; i < actualLimit; i++)
+    for(int i = 0; i < athletesLimit; i++)
     {
         if(allAthletes[i].age < 200 && allAthletes[i].position > 0)
         {
