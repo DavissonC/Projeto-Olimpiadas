@@ -47,18 +47,18 @@
 
 int main () {
 
-    printf( "--- SISTEMA DE ANALISE OLIMPICA ---\n" );
+    printf( "--- SISTEMA DE ANÁLISE OLÍMPICA ---\n" );
 
 
     // === ALOCAR MEMÓRIA DINÂMICAMENTE (HEAP):
-        printf( "Iniciando Alocacao de Memoria..." );
+        printf( "Iniciando Alocação de Memória..." );
         
         Atleta* bd_atletas = (Atleta *) calloc(MAX_ATLETAS, sizeof(Atleta));
         Medalhista* lista_final = (Medalhista *) calloc(MAX_MEDALHISTAS, sizeof(Medalhista));
         
         // Verificação de segurança caso falte memória RAM.
         if ( bd_atletas == NULL || lista_final == NULL ) {
-            printf( "\nERRO: Falha na alocacao de memoria. Tente Reduzir os valores MAX\n");
+            printf( "\nERRO: Falha na alocação de memória. Tente Reduzir os valores MAX\n");
             return 1;
         }
     //
@@ -74,7 +74,7 @@ int main () {
             free(lista_final);
             return 1;
         }
-        printf( "\nExito! (%d registros carregados)\n", qtd_atletas );
+        printf( "\nÊxito! (%d registros carregados)\n", qtd_atletas );
     //
 
 
@@ -86,11 +86,11 @@ int main () {
             printf( "\nAVISO: Nenhum medalhista encontrado. Verifique os filtros de leitura.\n");
 
         } else {
-            printf( "\nExito! (%d medalhas processadas)\n", qtd_medalhistas );
+            printf( "\nÊxito! (%d medalhas processadas)\n", qtd_medalhistas );
 
             printf( "\nOrdenando ranking por idade... " );
             ordenar_medalhistas(lista_final, qtd_medalhistas);
-            printf( "Concluido:\n" );
+            printf( "Concluído:\n" );
 
             exibir_ranking_idade(lista_final, qtd_medalhistas, 10);
         }

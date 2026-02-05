@@ -76,7 +76,7 @@ void exibir_ranking_idade (Medalhista* lista, int total_medalhistas, int top_n )
                 // Verificar se a atleta já apareceu no ranking.
                 if ( !nome_ja_exibido(nomes_impressos, contador, lista[i].nome) ) {
 
-                    printf( "%d. %s (%s)\n", contador + 1, lista[i].nome, lista[i].noc );
+                    printf( "%d. %s (%s)\n", contador + 1, lista[i].nome, lista[i].pais );
                     printf( "   Idade: %d anos | Medalha: %s\n", lista[i].idade_no_evento, lista[i].medalha );
                     printf( "   Evento: %s (%d)\n", lista[i].modalidade, lista[i].ano_olimpiada );
                     printf( "-------------------------------------------------------\n" );
@@ -105,7 +105,7 @@ void exibir_ranking_idade (Medalhista* lista, int total_medalhistas, int top_n )
 
                 if ( !nome_ja_exibido(nomes_impressos, contador, lista[i].nome) ) {
 
-                    printf( "%d. %s (%s)\n", contador + 1, lista[i].nome, lista[i].noc );
+                    printf( "%d. %s (%s)\n", contador + 1, lista[i].nome, lista[i].pais );
                     printf( "   Idade: %d anos | Medalha: %s\n", lista[i].idade_no_evento, lista[i].medalha );
                     printf( "   Evento: %s (%d)\n", lista[i].modalidade, lista[i].ano_olimpiada );
                     printf( "-------------------------------------------------------\n" );
