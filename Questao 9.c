@@ -15,7 +15,6 @@ EdicaoPadrao verao[10];
 EdicaoPadrao inverno[10];
 
 //Por boa prática divido as açoes da funçao principal em outras funçoes mais especificas
-
 void insereAno(int *anos, int ano) { //Funçao que insere o ano no array de anos, se ja existir, nao insere novamente
     for (int i = 0; i < 10; i++)
         if (anos[i] == ano)
@@ -82,8 +81,15 @@ int anovalido(int *anos, int ano) { //Funçao que verifica se o ano é válido, 
     return 0; //Retorno 0 se o ano for inválido
 }
 
-
-
+EdicaoPadrao getedicao(EdicaoPadrao* ed, int ano, char* tipo){ //Funçao que retorna a ediçao correspondente ao ano e tipo
+    for(int i = 0; i < 10; i++){
+        if(ed[i].ano == ano && strcmp(ed[i].tipo, tipo) == 0){
+            return ed[i]; //Retorno a ediçao se encontrar
+        }
+    }
+    EdicaoPadrao edicaoVazia = {0}; //Retorno uma ediçao vazia se nao encontrar, isso é importante para evitar erros de acesso a memória
+    return edicaoVazia;
+}
 
 int main()
 {
@@ -142,10 +148,28 @@ int main()
         }
         if(strcmp(tipo, "Summer") == 0 && anovalido(anosVerao, ano)){ //Verifico se o tipo é verão e se o ano é válido
             addIds(verao, ano, id, tipo);
+            EdicaoPadrao* e = getEdicao(verao, ano, tipo); //Pego a ediçao correspondente ao ano
+            if(!verificarId(e, id)) //Verifico se o ID ja existe na ediçao, se nao existir, adiciono
+                addIds(verao, ano, id, tipo);
         }
         else if(strcmp(tipo, "Winter") == 0 && anovalido(anosInverno, ano)){
-            addIds(inverno, ano, id, tipo);
+            EdicaoPadrao *e = getEdicao(inverno, ano, tipo);
+            if(!verificarId(e, id)) //Pego a ediçao correspondente ao ano
+                addIds(inverno, ano, id, tipo);
         }
     }
-    fclose(arquivo); //Fecho o arquivo após o uso
+    fclose(arquivo); //Fecho o arquivo após o uso, é uma boa prática para liberar recursos do sistema
+
+    printf("Olimpíadas de Verão:\n");
+    for(int i = 0; i < 10; i++){
+        if(verao[i].ano != 0){ //Imprimo apenas os anos que foram preenchidos, por segurança e boa prática, para evitar imprimir anos vazios
+            printf("Ano: %d, Quantidade de Atletas: %d\n", verao[i].ano, verao[i].qtdAtletas);
+        }
+    }
+    printf("Olimpíadas de Inverno:\n");
+    for(int i = 0; i < 10; i++){
+        if(inverno[i].ano != 0){
+            printf("Ano: %d, Quantidade de Atletas: %d\n", inverno[i].ano, inverno[i].qtdAtletas);
+        }
+    }
 }
