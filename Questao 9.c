@@ -6,12 +6,35 @@ desse número ao longo do tempo, separando Verão e Inverno.*/
 
 typedef struct{
     int ano;
-    int IDsatl[200000]; //Array que guarda os IDs dos atletas
+    int IDsatl[200000]; //Array que guarda os IDs dos atletas, esse array é grande para evitar overflow
     char tipo[10]; //Verão ou Inverno
     int qtdAtletas;
 }EdicaoPadrao; //Struct que guarda os dados de cada ediçao, separando Verão e Inverno, sendo 10 vezes cada
 EdicaoPadrao verao[10];
 EdicaoPadrao inverno[10];
+
+
+void insereAno(int *anos, int ano) {
+    for (int i = 0; i < 10; i++)
+        if (anos[i] == ano)
+            return; // já existe
+    for (int i = 0; i < 10; i++) {
+        if (anos[i] == 0) {
+            anos[i] = ano;
+            return;
+        }
+    }
+    // encontra o menor
+    int min = 0;
+    for (int i = 1; i < 10; i++){
+        if (anos[i] < anos[min]){
+            min = i;
+        }
+        if (ano > anos[min]){
+            anos[min] = ano;
+        }
+    }
+}
 
 
 //Por boa prática divido as açoes da funçao principal em outra funçao mais especifica
