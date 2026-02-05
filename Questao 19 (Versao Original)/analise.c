@@ -79,7 +79,7 @@ void exibir_ranking_idade (Medalhista* lista, int total_medalhistas, int top_n )
                     printf( "%d. %s (%s)\n", contador + 1, lista[i].nome, lista[i].pais );
                     printf( "   Idade: %d anos | Medalha: %s\n", lista[i].idade_no_evento, lista[i].medalha );
                     printf( "   Evento: %s (%d)\n", lista[i].modalidade, lista[i].ano_olimpiada );
-                    printf( "-------------------------------------------------------\n" );
+                    printf( "------------------------------------------------------------------\n" );
 
                     nomes_impressos[contador] = lista[i].nome;
                     contador++;
@@ -94,7 +94,7 @@ void exibir_ranking_idade (Medalhista* lista, int total_medalhistas, int top_n )
 
 
     // LOOP 2 - MASCULINO:
-    printf( "\n--- MASCULINO ---\n" );
+    printf( "\n\n--- MASCULINO ---\n" );
     contador = 0;                                                                        // Reiniciar o contador.
 
     for ( int i = 0 ; i < total_medalhistas ; i++ ) {
@@ -108,7 +108,7 @@ void exibir_ranking_idade (Medalhista* lista, int total_medalhistas, int top_n )
                     printf( "%d. %s (%s)\n", contador + 1, lista[i].nome, lista[i].pais );
                     printf( "   Idade: %d anos | Medalha: %s\n", lista[i].idade_no_evento, lista[i].medalha );
                     printf( "   Evento: %s (%d)\n", lista[i].modalidade, lista[i].ano_olimpiada );
-                    printf( "-------------------------------------------------------\n" );
+                    printf( "------------------------------------------------------------------\n" );
 
                     nomes_impressos[contador] = lista[i].nome;
                     contador++;
@@ -121,7 +121,7 @@ void exibir_ranking_idade (Medalhista* lista, int total_medalhistas, int top_n )
     
     if ( contador == 0 ) printf( "Nenhum registro encontrado.\n" );
 
-    printf( "=======================================================\n" );
+    printf( "==================================================================\n" );
 
     free( nomes_impressos );                                                             // Limpar memória auxiliar.
 }
