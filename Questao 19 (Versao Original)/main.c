@@ -28,7 +28,7 @@
  * 
  * ==========================================================================================================
  * @author Mateus Aranha (github.com/matt-aranha)
- * @version 1.0
+ * @version 2.0
  * ==========================================================================================================
 */
 
@@ -38,6 +38,7 @@
 #include "dados.h"
 #include "leitura.h"
 #include "analise.h"
+#include "gui.h"
 
 #define MAX_ATLETAS 200000                                                               // No arquivo 'bios.csv', o ID vai até 149.814
 #define MAX_MEDALHISTAS 50000
@@ -47,18 +48,18 @@
 
 int main () {
 
-    printf( "--- SISTEMA DE ANALISE OLIMPICA ---\n" );
+    printf( "--- SISTEMA DE ANÁLISE OLÍMPICA ---\n" );
 
 
     // === ALOCAR MEMÓRIA DINÂMICAMENTE (HEAP):
-        printf( "Iniciando Alocacao de Memoria..." );
+        printf( "Iniciando Alocação de Memória..." );
         
         Atleta* bd_atletas = (Atleta *) calloc(MAX_ATLETAS, sizeof(Atleta));
         Medalhista* lista_final = (Medalhista *) calloc(MAX_MEDALHISTAS, sizeof(Medalhista));
         
         // Verificação de segurança caso falte memória RAM.
         if ( bd_atletas == NULL || lista_final == NULL ) {
-            printf( "\nERRO: Falha na alocacao de memoria. Tente Reduzir os valores MAX\n");
+            printf( "\nERRO: Falha na alocação de memória. Tente Reduzir os valores MAX\n");
             return 1;
         }
     //
@@ -66,7 +67,7 @@ int main () {
 
     // === LEITURA DOS ATLETAS:
         printf( "\nLendo arquivo de atletas..." );
-        int qtd_atletas = carregar_atletas("../Banco de Dados/bios.csv", bd_atletas);
+        int qtd_atletas = carregar_atletas("../Banco de Dados/bios.csv", bd_atletas);                                            // Para quem estiver testando esse programa, certifique-se de substituir o caminho para condizer com onde estão os arquivos csv na sua máquina. (Lembrando que os arquivos estão dispiníveis em https://github.com/KeithGalli/Olympics-Dataset)
 
         if ( qtd_atletas <= 0 ) {
             printf( "\nERRO: Nenhum atleta lido. Verifique o nome do arquivo ou formato.\n" );
@@ -74,27 +75,32 @@ int main () {
             free(lista_final);
             return 1;
         }
-        printf( "\nExito! (%d registros carregados)\n", qtd_atletas );
+        printf( "\nÊxito! (%d registros carregados)\n", qtd_atletas );
     //
 
 
     // === PROCESSAMENTO E CRUZAMENTO DE DADOS (JOIN):
         printf( "\nLendo arquivo de resultados e cruzando os dados..." );
-        int qtd_medalhistas = processar_resultados("../Banco de Dados/results.csv", bd_atletas, lista_final);
+        int qtd_medalhistas = processar_resultados("../Banco de Dados/results.csv", bd_atletas, lista_final);                    // Para quem estiver testando esse programa, certifique-se de substituir o caminho para condizer com onde estão os arquivos csv na sua máquina. (Lembrando que os arquivos estão dispiníveis em https://github.com/KeithGalli/Olympics-Dataset)
 
         if ( qtd_medalhistas == 0 ) {
             printf( "\nAVISO: Nenhum medalhista encontrado. Verifique os filtros de leitura.\n");
 
         } else {
-            printf( "\nExito! (%d medalhas processadas)\n", qtd_medalhistas );
+            printf( "\nÊxito! (%d medalhas processadas)\n", qtd_medalhistas );
 
             printf( "\nOrdenando ranking por idade... " );
             ordenar_medalhistas(lista_final, qtd_medalhistas);
-            printf( "Concluido:\n" );
+            printf( "Concluído:\n" );
 
             exibir_ranking_idade(lista_final, qtd_medalhistas, 10);
         }
     //
+
+
+    // === INICIAR INTERFACE GRÁFICA:
+    printf( "\nAbrindo interface gráfica (Feita com Raylib)...\n" );
+    iniciar_gui_olimpiadas( lista_final, qtd_medalhistas, 10 );
 
 
     // === LIBERAR MEMÓRIA ALOCADA:

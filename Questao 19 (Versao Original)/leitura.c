@@ -8,19 +8,19 @@
 // === CONFIGURAÇÃO DAS COLUNAS DOS .CSV ===
 
 // Arquivo de ATLETAS ('bios.csv'):
-// Col 1: Sex | Col 3: Name | Col 4: Born | Col 7: ID
+// Col 1: Sex | Col 3: Name | Col 4: Born | Col 6: NOC | Col 7: ID
 #define A_COL_GENERO 1
 #define A_COL_NOME 3
 #define A_COL_NASCIMENTO 4
+#define A_COL_PAIS 6
 #define A_COL_ID 7
 
 // Arquivo de RESULTADOS ('results.csv'):
-// Col 0: Games | Col 1: Event | Col 4: Medal | Col 6: ID | Col 7: NOC
+// Col 0: Games | Col 1: Event | Col 4: Medal | Col 6: ID
 #define R_COL_EDICAO 0
 #define R_COL_ESPORTE 1
 #define R_COL_MEDALHA 4
 #define R_COL_ID 6
-#define R_COL_NOC 7
 
 #define BUFFER_SIZE 8192           // Aumentado para garantir a leitura de linhas muuuito longas.
 
@@ -118,7 +118,7 @@ char* get_csv_field( char* line, int number ) {
 
 // === FUNÇÕES PRINCIPAIS (DO HEADER) ===
 
-// Função para carregar os dados dos atletas:
+// Função para carregar os dados dos atletas ('bios.csv' => Atleta* banco_dados):
 int carregar_atletas ( const char* caminho_arquivo, Atleta *banco_dados ) {
     FILE* f = fopen(caminho_arquivo, "r");                                               // Abrir arquivo no modo leitura.
 
@@ -137,6 +137,7 @@ int carregar_atletas ( const char* caminho_arquivo, Atleta *banco_dados ) {
         while ( fgets(linha, BUFFER_SIZE, f) ) {
             char* s_id = get_csv_field(linha, A_COL_ID);
             char* s_nome = get_csv_field(linha, A_COL_NOME);
+            char* s_pais = get_csv_field(linha, A_COL_PAIS);
             char* s_genero = get_csv_field(linha, A_COL_GENERO);
             char* s_nascimento = get_csv_field(linha, A_COL_NASCIMENTO);
 
@@ -166,6 +167,15 @@ int carregar_atletas ( const char* caminho_arquivo, Atleta *banco_dados ) {
                         banco_dados[id].ano_nascimento = 0;                              // Erro ao ler.
                     }
 
+                    // Salvar país na memória.
+                    if ( s_pais ) {
+                        strncpy(banco_dados[id].pais, s_pais, MAX_PAIS - 1);
+                        banco_dados[id].pais[MAX_PAIS - 1] = '\0';                       // Garantir que a terminação seja nula.
+
+                    } else {
+                        strcpy(banco_dados[id].pais, "Unknown");
+                    }
+
                     contador++;                                                          // Atualizar a quantidade de atletas lidos.
                 }
             }
@@ -173,6 +183,7 @@ int carregar_atletas ( const char* caminho_arquivo, Atleta *banco_dados ) {
             // Liberar memória auxiliar das string.
             if ( s_id ) free( s_id );
             if ( s_nome ) free( s_nome );
+            if ( s_pais ) free( s_pais );
             if ( s_genero ) free( s_genero );
             if ( s_nascimento ) free( s_nascimento );
         }
@@ -199,7 +210,6 @@ int processar_resultados ( const char* caminho_arquivo, Atleta* banco_dados, Med
         // Loop de leitura.
         while ( fgets(linha, BUFFER_SIZE, f) ) {
             char* s_id = get_csv_field(linha, R_COL_ID);
-            char* s_noc = get_csv_field(linha, R_COL_NOC);
             char* s_edicao = get_csv_field(linha, R_COL_EDICAO);
             char* s_medalha = get_csv_field(linha, R_COL_MEDALHA);
             char* s_esporte = get_csv_field(linha, R_COL_ESPORTE);
@@ -218,28 +228,21 @@ int processar_resultados ( const char* caminho_arquivo, Atleta* banco_dados, Med
                     // Validar as datas.
                     if ( ano_nasc > 1800 && ano_jogo > 1890 ) {
 
-                        // Copiar dados do Atleta (Memória).
+                        // Copiar dados do Atleta (Memória => bios.csv).
                         strcpy(lista_final[contador].nome, banco_dados[id].nome);
                         lista_final[contador].genero = banco_dados[id].genero;
 
-                        // Copiar dados do Resultado (CSV atual).
+                        // Copiar dados do Resultado (results.csv).
                         limpar_string(s_medalha);
                         strcpy(lista_final[contador].medalha, s_medalha);
 
-                        // Copiar dados do Esporte.
+                        // Copiar dados do Esporte (results.csv).
                         limpar_string(s_esporte);
                         strncpy(lista_final[contador].modalidade, s_esporte, MAX_EVENTO - 1);
                         lista_final[contador].modalidade[MAX_EVENTO - 1] = '\0';
 
-                        // Salvar o NOC do Medalhista.
-                        if ( s_noc ) {
-                            limpar_string(s_noc);
-                            strncpy(lista_final[contador].noc, s_noc, MAX_NOC - 1);
-                            lista_final[contador].noc[MAX_NOC - 1] = '\0';
-
-                        } else {
-                            strcpy(lista_final[contador].noc, "???");
-                        }
+                        // Copiar pais do Atleta (Memória => bios.csv).
+                        strcpy(lista_final[contador].pais, banco_dados[id].pais);
 
                         lista_final[contador].ano_olimpiada = ano_jogo;
 
@@ -253,7 +256,6 @@ int processar_resultados ( const char* caminho_arquivo, Atleta* banco_dados, Med
 
             // Liberar memória auxiliar das strings.
             if ( s_id ) free( s_id );
-            if ( s_noc ) free( s_noc );
             if ( s_edicao ) free( s_edicao );
             if ( s_medalha ) free( s_medalha );
             if ( s_esporte ) free( s_esporte );

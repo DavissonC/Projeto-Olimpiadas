@@ -11,7 +11,7 @@
    #define MAX_NOME 150
    #define MAX_EVENTO 100
    #define MAX_MEDALHA 20
-   #define MAX_NOC 10
+   #define MAX_PAIS 60
 
 
    // Struct Atleta:
@@ -20,6 +20,7 @@
       char nome[MAX_NOME];
       char genero;                 // 'M' ou 'F'
       int ano_nascimento;          // p/ calcular a idade posteriormente (ano da competição - ano de nascimento)
+      char pais[MAX_PAIS];
 
    } Atleta;
 
@@ -32,7 +33,7 @@
       char medalha[MAX_MEDALHA];
       int ano_olimpiada;
       char modalidade[MAX_EVENTO];
-      char noc[MAX_NOC];
+      char pais[MAX_PAIS];
 
    } Medalhista;
 
