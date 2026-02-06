@@ -16,10 +16,11 @@
 #define A_COL_ID 7
 
 // Arquivo de RESULTADOS ('results.csv'):
-// Col 0: Games | Col 1: Event | Col 4: Medal | Col 6: ID
+// Col 0: Games | Col 1: Event | Col 4: Medal | Col 5: As (Nome usado) | Col 6: ID
 #define R_COL_EDICAO 0
 #define R_COL_ESPORTE 1
 #define R_COL_MEDALHA 4
+#define R_COL_NOME_RESULTADOS 5
 #define R_COL_ID 6
 
 #define BUFFER_SIZE 8192           // Aumentado para garantir a leitura de linhas muuuito longas.
@@ -213,6 +214,7 @@ int processar_resultados ( const char* caminho_arquivo, Atleta* banco_dados, Med
             char* s_edicao = get_csv_field(linha, R_COL_EDICAO);
             char* s_medalha = get_csv_field(linha, R_COL_MEDALHA);
             char* s_esporte = get_csv_field(linha, R_COL_ESPORTE);
+            char* s_nome_result = get_csv_field(linha, R_COL_NOME_RESULTADOS);           // Leitura do nome da coluna 'As' (Geralmente mais limpo).
 
             // Filtrar se o atleta é medalhista:
             if ( s_medalha && strlen(s_medalha) > 0 && strcmp(s_medalha, "NA") != 0 ) {
@@ -228,8 +230,16 @@ int processar_resultados ( const char* caminho_arquivo, Atleta* banco_dados, Med
                     // Validar as datas.
                     if ( ano_nasc > 1800 && ano_jogo > 1890 ) {
 
-                        // Copiar dados do Atleta (Memória => bios.csv).
-                        strcpy(lista_final[contador].nome, banco_dados[id].nome);
+                        // Priorizar o nome vindo de 'results.csv' se existir, pois não usa o separador '•'.
+                        if ( s_nome_result && strlen(s_nome_result) > 1 ) {
+                            strncpy(lista_final[contador].nome, s_nome_result, MAX_NOME - 1);
+                            lista_final[contador].nome[MAX_NOME - 1] = '\0';
+
+                        } else {
+                            // Fallback: Copiar nome do Atleta da memória (bios.csv) se o do results estiver vazio.
+                            strcpy(lista_final[contador].nome, banco_dados[id].nome);
+                        }
+
                         lista_final[contador].genero = banco_dados[id].genero;
 
                         // Copiar dados do Resultado (results.csv).
@@ -259,6 +269,7 @@ int processar_resultados ( const char* caminho_arquivo, Atleta* banco_dados, Med
             if ( s_edicao ) free( s_edicao );
             if ( s_medalha ) free( s_medalha );
             if ( s_esporte ) free( s_esporte );
+            if ( s_nome_result ) free( s_nome_result );
         }
 
     fclose(f);                                                                           // Fechar o arquivo.
