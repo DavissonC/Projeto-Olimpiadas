@@ -180,7 +180,7 @@ int MapearPiorPosicaoEsportes(DisciplineStats *disciplines, int disciplinesLimit
                     break;
                 }
             }
-            
+
             if (found == -1 && disciplinesQuantity < disciplinesLimit) 
             {
                 strcpy(disciplines[disciplinesQuantity].name, Discipline);
@@ -275,32 +275,25 @@ void CalcularRankingsFinais(Athlete *allAthletes, int athletesLimit, DisciplineS
 
 void ExibirResultados(Athlete *athletesMasc, Athlete *athletesFem, int *filledAthletes)
 {
-    printf("\n%s\n", "==============================================================================================================================================================");
-    printf("                                               TOP 10 ATLETAS MAIS NOVOS E PIORES COLOCADOS - MASCULINO                                                              \n");
-    printf("%s\n", "==============================================================================================================================================================");
-    printf("%-4s | %-28s | %-5s | %-4s | %-26s | %-21s | %s\n", "Rank", "Atleta", "Idade", "Pos", "País", "Olimpíada", "Disciplina");
-    printf("%s\n", "--------------------------------------------------------------------------------------------------------------------------------------------------------------");
+    char tempPos[12];
+    char *secao[] = {"MASCULINO", "FEMININO"};
+    Athlete *listas[] = {athletesMasc, athletesFem};
 
-    for(int i = 0; i < filledAthletes[0]; i++) 
+    for (int k = 0; k < 2; k++)
     {
-        printf("%02d   | %-30.30s | %-5d | %-4d | %-25.25s | %-20.20s | %s\n", 
-               i + 1, athletesMasc[i].name, athletesMasc[i].age, athletesMasc[i].position, 
-               athletesMasc[i].country, athletesMasc[i].game, athletesMasc[i].sport);
-    }
+        printf("\n==============================================================================================================================================================\n");
+        printf("                                               TOP 10 ATLETAS MAIS NOVOS E PIORES COLOCADOS - %s                                                              \n", secao[k]);
+        printf("==============================================================================================================================================================\n");
+        printf("%-4s | %-28s | %-5s | %-4s | %-26s | %-21s | %s\n", "Rank", "Atleta", "Idade", "Pos", "País", "Olimpíada", "Disciplina");
+        printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
-    printf("\n%s\n", "==============================================================================================================================================================");
-    printf("                                               TOP 10 ATLETAS MAIS NOVOS E PIORES COLOCADOS - FEMININO                                                               \n");
-    printf("%s\n", "==============================================================================================================================================================");
-    printf("%-4s | %-28s | %-5s | %-4s | %-26s | %-21s | %s\n", "Rank", "Atleta", "Idade", "Pos", "País", "Olimpíada", "Disciplina");
-    printf("%s\n", "--------------------------------------------------------------------------------------------------------------------------------------------------------------");
-
-    for(int i = 0; i < filledAthletes[1]; i++) 
-    {
-        printf("%02d   | %-30.30s | %-5d | %-4d | %-25.25s | %-20.20s | %s\n", 
-               i + 1, athletesFem[i].name, athletesFem[i].age, athletesFem[i].position, 
-               athletesFem[i].country, athletesFem[i].game, athletesFem[i].sport);
+        for(int i = 0; i < filledAthletes[k]; i++) 
+        {
+            sprintf(tempPos, "%dº", listas[k][i].position);
+            printf("%02d   | %-30.30s | %-5d | %-5s | %-25.25s | %-20.20s | %s\n", i + 1, listas[k][i].name, listas[k][i].age, tempPos, listas[k][i].country, listas[k][i].game, listas[k][i].sport);
+        }
+        printf("==============================================================================================================================================================\n");
     }
-    printf("%s\n", "==============================================================================================================================================================");
 }
 
 void NormalizarString(char *nome)
