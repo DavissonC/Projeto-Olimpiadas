@@ -50,6 +50,60 @@ void pegarColuna(char *linha, int colunaAlvo, char *resultado) { //Pega uma colu
     resultado[j] = '\0'; //Põe o char nulo no final do array
 }
 
+void GerarArquivosGnuplot(Edicao *verao, int totalVerao, Edicao *inverno, int totalInverno) { //Cria arquivos .dat com os dados para gerar os gráficos
+    FILE *fVerao = fopen("verao.dat", "w"); //abre o arquivo para escrita ("w")
+    if (fVerao == NULL) {
+        printf("Erro ao criar verao.dat.\n");
+        return;
+    }
+    for (int i = 0; i < totalVerao; i++) { // Escreve ano e qtd de atletas no arquivo
+        fprintf(fVerao, "%d %d\n", verao[i].ano, verao[i].qtdAtletas);
+    }
+    fclose(fVerao);
+
+    FILE *fInverno = fopen("inverno.dat", "w"); //Faz a mesma coisa para o verão
+    if (fInverno == NULL) {
+        printf("Erro ao criar inverno.dat.\n");
+        return;
+    }
+    for (int i = 0; i < totalInverno; i++) {
+        fprintf(fInverno, "%d %d\n", inverno[i].ano, inverno[i].qtdAtletas);
+    }
+    fclose(fInverno);
+}
+
+void GerarCodigoGnuplot() { //Cria um arquivo gnuplot que configura os gráficos
+    FILE *fCodigo = fopen("grafico.gp", "w");
+    if (fCodigo == NULL) {
+        printf("Erro ao criar o arquivo de script.\n");
+        return;
+    }
+
+    fprintf(fCodigo, "set terminal qt size 1000,800\n");
+    fprintf(fCodigo, "set multiplot layout 2,1 title \"Evolucao de Atletas: Primeiras 10 Edicoes\" font \",16\"\n\n");
+
+    fprintf(fCodigo, "set key top left\n");
+    fprintf(fCodigo, "set grid y\n\n");
+
+    fprintf(fCodigo, "set style data histograms\n");
+    fprintf(fCodigo, "set style fill solid 0.8 border -1\n");
+    fprintf(fCodigo, "set boxwidth 1.5 relative\n\n");
+
+    fprintf(fCodigo, "set xtics rotate by 0\n");
+    fprintf(fCodigo, "set ylabel \"Qtd de Atletas\"\n\n");
+
+    fprintf(fCodigo, "set title \"Jogos de Verao\" font \",13\"\n");
+    fprintf(fCodigo, "plot \"verao.dat\" using 2:xtic(1) lc rgb \"#fcbd00\" title \"Atletas Verao\"\n\n");
+
+    fprintf(fCodigo, "set title \"Jogos de Inverno\" font \",13\"\n");
+    fprintf(fCodigo, "set xlabel \"Ano da Edicao\"\n");
+    fprintf(fCodigo, "plot \"inverno.dat\" using 2:xtic(1) lc rgb \"#90eeff\" title \"Atletas Inverno\"\n\n");
+
+    fprintf(fCodigo, "unset multiplot\n");
+
+    fclose(fCodigo);
+}
+
 int main() {
     FILE *arquivo = fopen("results.csv", "r");
     // Abre o arquivo e verifica se abriu corretamente
@@ -137,6 +191,12 @@ int main() {
     for(int i = 0; i < totalInverno; i++) {
         printf("Olimpiadas de %d: %d atletas\n", inverno[i].ano, inverno[i].qtdAtletas);
     }
+
+    GerarArquivosGnuplot(verao, totalVerao, inverno, totalInverno);
+
+    GerarCodigoGnuplot();
+
+    system("\"C:\\Program Files\\gnuplot\\bin\\gnuplot.exe\" -p grafico.gp"); //O caminho relativo ao executavel do gnuplot (talvez precise mudar ao rodar em outra máquina)
 
     free(totalRegistros); // Libera a memória
     return 0;
