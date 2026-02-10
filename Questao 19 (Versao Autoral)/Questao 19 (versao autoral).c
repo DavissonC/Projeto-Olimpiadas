@@ -23,7 +23,7 @@ typedef struct
     int results;       // Pontuação final
 } Athlete;
 
-typedef struct 
+typedef struct
 {
     char name[100];    // Discipline
     int maxPos;        // Pior posição (de maior índice)
