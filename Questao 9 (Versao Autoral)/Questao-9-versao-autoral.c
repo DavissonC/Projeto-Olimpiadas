@@ -105,7 +105,7 @@ void GerarCodigoGnuplot() { //Cria um arquivo gnuplot que configura os gráficos
 }
 
 int main() {
-    FILE *arquivo = fopen("results.csv", "r");
+    FILE *arquivo = fopen("../results.csv", "r");
     // Abre o arquivo e verifica se abriu corretamente
     if (arquivo == NULL) {
         printf("Nao foi possivel abrir o arquivo.\n");
