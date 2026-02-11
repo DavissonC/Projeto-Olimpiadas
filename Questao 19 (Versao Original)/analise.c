@@ -99,7 +99,7 @@ void exibir_ranking_idade (Medalhista* lista, int total_medalhistas, int top_n )
         printf("%-4s | %-28s   | %-5s | %-26s | %-21s | %s\n", "Rank", "Atleta", "Idade", "País", "Olimpíada", "Disciplina");
         printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
-        contador = 0;                                                                        // Reiniciar o contador.
+    contador = 0;                                                                        // Reiniciar o contador.
 
         for ( int i = 0 ; i < total_medalhistas ; i++ ) {
             // Filtrar por gênero 'M'.
@@ -115,7 +115,7 @@ void exibir_ranking_idade (Medalhista* lista, int total_medalhistas, int top_n )
                         contador++;
                     }
 
-                    if ( contador >= top_n ) break;                                          // Para assim que completar o Top 10).
+                if ( contador >= top_n ) break;                                          // Para assim que completar o Top 10).
                 }
             }
         }
