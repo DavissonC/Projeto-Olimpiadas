@@ -40,7 +40,7 @@
 #include "analise.h"
 #include "gui.h"
 
-#define MAX_ATLETAS 200000                                                               // No arquivo 'bios.csv', o ID vai até 149.814
+#define MAX_ATLETAS 200000                                                                                        // No arquivo 'bios.csv', o ID vai até 149.814
 #define MAX_MEDALHISTAS 50000
 
 
@@ -67,7 +67,7 @@ int main () {
 
     // === LEITURA DOS ATLETAS:
         printf( "\nLendo arquivo de atletas..." );
-        int qtd_atletas = carregar_atletas("../Banco de Dados/bios.csv", bd_atletas);                                            // Para quem estiver testando esse programa, certifique-se de substituir o caminho para condizer com onde estão os arquivos csv na sua máquina. (Lembrando que os arquivos estão dispiníveis em https://github.com/KeithGalli/Olympics-Dataset)
+        int qtd_atletas = carregar_atletas("../bios.csv", bd_atletas);                                            // Para quem estiver testando esse programa, certifique-se de substituir o caminho para condizer com onde estão os arquivos csv na sua máquina. (Lembrando que os arquivos estão dispiníveis em https://github.com/KeithGalli/Olympics-Dataset)
 
         if ( qtd_atletas <= 0 ) {
             printf( "\nERRO: Nenhum atleta lido. Verifique o nome do arquivo ou formato.\n" );
@@ -79,9 +79,9 @@ int main () {
     //
 
 
-    // === PROCESSAMENTO E CRUZAMENTO DE DADOS (JOIN):
+    // === PROCESSAMENTO E CRUZAMENTO DE DADOS ("JOIN"):
         printf( "\nLendo arquivo de resultados e cruzando os dados..." );
-        int qtd_medalhistas = processar_resultados("../Banco de Dados/results.csv", bd_atletas, lista_final);                    // Para quem estiver testando esse programa, certifique-se de substituir o caminho para condizer com onde estão os arquivos csv na sua máquina. (Lembrando que os arquivos estão dispiníveis em https://github.com/KeithGalli/Olympics-Dataset)
+        int qtd_medalhistas = processar_resultados("../results.csv", bd_atletas, lista_final);                    // Para quem estiver testando esse programa, certifique-se de substituir o caminho para condizer com onde estão os arquivos csv na sua máquina. (Lembrando que os arquivos estão dispiníveis em https://github.com/KeithGalli/Olympics-Dataset)
 
         if ( qtd_medalhistas == 0 ) {
             printf( "\nAVISO: Nenhum medalhista encontrado. Verifique os filtros de leitura.\n");
