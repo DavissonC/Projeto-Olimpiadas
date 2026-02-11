@@ -57,7 +57,7 @@ Para garantir eficiência e a pontuação extra de interface visual, utilizamos:
    * Q09 - Autoral:       
     
 
-    gcc 
+    cd Questao-9-versao-autoral  && gcc Questao-9-versao-autoral.c -o "Questao 9 (Versao Autoral)" && "Questao 9 (Versao Autoral).exe" && cd ..
    
 
    * Q19:         
