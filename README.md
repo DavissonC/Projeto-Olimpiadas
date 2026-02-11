@@ -20,7 +20,7 @@ O software realiza o *parsing* de arquivos CSV de larga escala (mais de 300.000 
 1.  **Evolução das Últimas 10 Edições (Q9):** Análise do crescimento do número de atletas nas Olimpíadas de Verão e Inverno da era moderna.
 2.  **Evolução das Primeiras 10 Edições (Q9 - Autoral):** Análise do crescimento do número de atletas nas Olimpíadas de Verão e Inverno do início da competição.
 3.  **Ranking de Medalhistas Mais Velhos (Q19):** Identificação dos 10 atletas mais velhos a conquistarem medalhas, segmentados por gênero.
-4.  **Ranking de Atletas Mais Novos e Piores Colocados (Q19 - Autoral):** Uma análise estatística inversa para identificar jovens estreantes e sua performance.
+4.  **Ranking de Atletas Mais Novos e Piores Colocados (Q19 - Autoral):** Uma análise estatística inversa para identificar jovens estreantes de pior performance.
 
 ---
 
