@@ -70,7 +70,7 @@ char* ler_campo(char** cursor) {
     //Se o campo começa com aspas, pulamos a aspa inicial
     if (*atual == '"') {
         dentro_aspas = 1;
-        inicio++; 
+        inicio++;
         atual++;
     }
     while (*atual != '\0') {
@@ -157,9 +157,68 @@ int anovalido(int *anos, int ano) { //Funçao que verifica se o ano é válido, 
     return 0; //Retorno 0 se o ano for inválido
 }
 
+//Para processar um gráfico de dados, utilizando o gnuplot, é necessário organizar os dados em um formato específico, geralmente em colunas, onde cada coluna representa uma variável diferente. No caso da evolução do número de atletas nas Olimpíadas de Verão e Inverno, com isso organizo os dados da seguinte maneira:
+
+void gerarArquivosGnuplot(EdicaoPadrao* verao, EdicaoPadrao* inverno) {
+    FILE* fVerao = fopen("verao.dat", "w");
+    FILE* fInverno = fopen("inverno.dat", "w");
+
+    if (!fVerao || !fInverno) {
+        printf("Erro ao criar arquivos .dat\n");
+        return;
+    }
+
+    for (int i = 0; i < 10; i++) {
+        if (verao[i].ano != 0) {
+            fprintf(fVerao, "%d %d\n", verao[i].ano, verao[i].qtdAtletas);
+        }
+    }
+
+    for (int i = 0; i < 10; i++) {
+        if (inverno[i].ano != 0) {
+            fprintf(fInverno, "%d %d\n", inverno[i].ano, inverno[i].qtdAtletas);
+        }
+    }
+
+    fclose(fVerao);
+    fclose(fInverno);
+}
+
+void gerarScriptGnuplot() { //Aqui eu crio um script para o gnuplot, que é uma ferramenta de plotagem de gráficos, esse script vai ler os arquivos .dat gerados anteriormente e criar um gráfico de barras para cada tipo de Olimpíada, configurando também seu layout e títulos para facilitar a visualização dos dados
+    FILE* f = fopen("grafico.gp", "w");
+    if (!f) {
+        printf("Erro ao criar grafico.gp\n");
+        return;
+    }
+
+    fprintf(f, "set terminal qt size 1000,800\n");
+    fprintf(f, "set multiplot layout 2,1 title \"Evolucao de Atletas: Primeiras 10 Edicoes\" font \",16\"\n\n");
+
+    fprintf(f, "set key top left\n");
+    fprintf(f, "set grid y\n\n");
+
+    fprintf(f, "set style data histograms\n");
+    fprintf(f, "set style fill solid 0.8 border -1\n");
+    fprintf(f, "set boxwidth 1.5 relative\n\n");
+
+    fprintf(f, "set xtics rotate by 0\n");
+    fprintf(f, "set ylabel \"Qtd de Atletas\"\n\n");
+
+    fprintf(f, "set title \"Jogos de Verao\" font \",13\"\n");
+    fprintf(f, "plot \"verao.dat\" using 2:xtic(1) lc rgb \"#0076fc\" title \"Atletas Verao\"\n\n");
+
+    fprintf(f, "set title \"Jogos de Inverno\" font \",13\"\n");
+    fprintf(f, "set xlabel \"Ano da Edicao\"\n");
+    fprintf(f, "plot \"inverno.dat\" using 2:xtic(1) lc rgb \"#90eeff\" title \"Atletas Inverno\"\n\n");
+
+    fprintf(f, "unset multiplot\n");
+
+    fclose(f);
+}
+
 int main()
 {
-    FILE* arquivo = fopen("results.csv","r"); //Por segurança verifico se o ponteiro nao está pegando lixo na memória
+    FILE* arquivo = fopen("../results.csv","r"); //Por segurança verifico se o ponteiro nao está pegando lixo na memória
     if(arquivo == NULL){
         printf("Não foi possível executar o arquivo");
         return 1;
@@ -237,4 +296,10 @@ int main()
             printf("Ano: %d, Quantidade de Atletas: %d\n", inverno[i].ano, inverno[i].qtdAtletas);
         }
     }
+    //Agora que temos os dados organizados, podemos gerar os arquivos para o gnuplot e o script para plotar os gráficos
+    gerarArquivosGnuplot(verao, inverno);
+    gerarScriptGnuplot();
+
+
+    system("start gnuplot -p grafico.gp"); //Aqui eu chamo o gnuplot para executar o script que gera os gráficos, a opção -p é para manter a janela do gráfico aberta após a execução
 }
