@@ -63,7 +63,7 @@ Para garantir eficiência e a pontuação extra de interface visual, utilizamos:
    * Q19:         
 
    
-    gcc main.c leitura.c analise.c gui.c atleta.c graficos.c -lraylib -o olympics_analysis
+    gcc analise.c gui.c leitura.c main.c -o questao_19_versao_original -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
     
 
   * Q19 - Autoral: 
