@@ -46,7 +46,7 @@ Para garantir eficiência e a pontuação extra de interface visual, utilizamos:
     * Os arquivos `bios.csv` e `results.csv` devem estar na pasta superior (`../`) para serem lidos corretamente pelo programa.
     * Para obtê-los, baixe do seguinte repositório: ([Olympics-Dataset](https://github.com/KeithGalli/Olympics-Dataset)) 
 
-3.  **Compilação:**
+3.  **Compilação e Execução:**
    * Q09:          
     
 
@@ -64,6 +64,7 @@ Para garantir eficiência e a pontuação extra de interface visual, utilizamos:
 
    
     gcc analise.c gui.c leitura.c main.c -o questao_19_versao_original -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+    questao_19_versao_original.exe
     
 
   * Q19 - Autoral: 
