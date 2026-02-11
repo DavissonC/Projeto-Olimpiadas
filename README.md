@@ -63,8 +63,7 @@ Para garantir eficiência e a pontuação extra de interface visual, utilizamos:
    * Q19:         
 
    
-    gcc analise.c gui.c leitura.c main.c -o questao_19_versao_original -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-    questao_19_versao_original.exe
+    cd "Questao 19 (Versao Original)" && gcc analise.c gui.c leitura.c main.c -o questao_19_versao_original -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 && questao_19_versao_original.exe && cd ..
     
 
   * Q19 - Autoral: 
