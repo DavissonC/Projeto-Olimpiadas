@@ -69,7 +69,7 @@ Para garantir eficiência e a pontuação extra de interface visual, utilizamos:
 
   * Q19 - Autoral: 
    ```
-   gcc "Questao 19 (Versao Autoral)/Questao 19 (Versao Autoral).c" "Questao 19 (Versao Autoral)/atleta.c" "Questao 19 (Versao Autoral)/graficos.c" -o "Questao 19 (Versao Autoral)/Questao 19 (Versao Autoral)" && ./"Questao 19 (Versao Autoral)/Questao 19 (Versao Autoral).exe"
+   cd "Questao 19 (Versao Autoral)" && gcc "Questao 19 (Versao Autoral).c" atleta.c graficos.c -o "Questao 19 (Versao Autoral)" && "Questao 19 (Versao Autoral).exe" && cd ..
    ```
 
 
