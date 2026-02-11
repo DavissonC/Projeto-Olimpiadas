@@ -1,87 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <limits.h>
-#include <locale.h>
-#include <math.h>
-#include <windows.h>
-
-// Dados de cada atleta (nome, país, gênero, pior posição)
-typedef struct
-{
-    char name[256];    // Used Name
-    char country[100]; // NOC
-    char sex[12];      // Sex
-    char born[50];     // Born
-    char game[50];     // Games
-    char sport[50];    // Discipline
-    int id;            // athlete_id
-    int position;      // Pos
-    int age;           // Game year - Birth year
-    int birth_year;
-    int results;       // Pontuação final
-} Athlete;
-
-typedef struct
-{
-    char name[100];    // Discipline
-    int maxPos;        // Pior posição (de maior índice)
-} DisciplineStats;
-
-// Funções de Processamento Modularizadas
-void ConfigurarTerminal();
-void CarregarBiografias(Athlete *allAthletes, int athletesLimit);
-int MapearPiorPosicaoEsportes(DisciplineStats *disciplines, int disciplinesLimit);
-void ProcessarResultadosIndividuais(Athlete *allAthletes, int athletesLimit);
-void CalcularRankingsFinais(Athlete *allAthletes, int athletesLimit, DisciplineStats *disciplines, int disciplinesQuantity, Athlete *athletesMasc, Athlete *athletesFem, int *cuttingResults, int *filledAthletes);
-void ExibirResultados(Athlete *athletesMasc, Athlete *athletesFem, int *filledAthletes);
-
-// Funções Utilitárias e de Lógica
-void ObterCampo(char *line, int column, char *destiny);
-int CalculaPioresAtletasNovos(Athlete *athletesMasc, Athlete *athletesFem, int *cuttingResults, int *filledAthletes, Athlete nextAthlete);
-int AlteraListaDosPiores(Athlete *athletesList, Athlete athlete, int *cuttingResults, int *filledAthletes);
-int CalculaResultados(int age, int position, int maxPosInSport);
-int ExtrairAno(char *str);
-void NormalizarString(char *nome);
-void LimparNome(char *nome);
-void RemoverAcentos(char *nome);
-
-int main()
-{
-    ConfigurarTerminal();
-
-    int disciplinesLimit = 300;
-    DisciplineStats *disciplines = calloc(disciplinesLimit, sizeof(DisciplineStats)); 
-    int disciplinesQuantity = 0;
-
-    // Listas que irão armazenar os dados dos 10 atletas mais novos e de pior colocação 
-    Athlete athletesMasc[10], athletesFem[10];
-
-    // Lista para armazenar todos os atletas
-    int athletesLimit = 150000;
-    Athlete *allAthletes = calloc(athletesLimit, sizeof(Athlete));
-
-    // Maiores resultados armazenados nas listas
-    int cuttingResults[2] = {1000000, 1000000};
-
-    // Quantidade de atletas já inseridos nas listas
-    int filledAthletes[2] = {0, 0};
-
-    CarregarBiografias(allAthletes, athletesLimit);
-
-    disciplinesQuantity = MapearPiorPosicaoEsportes(disciplines, disciplinesLimit);
-
-    ProcessarResultadosIndividuais(allAthletes, athletesLimit);
-
-    CalcularRankingsFinais(allAthletes, athletesLimit, disciplines, disciplinesQuantity, athletesMasc, athletesFem, cuttingResults, filledAthletes);
-
-    ExibirResultados(athletesMasc, athletesFem, filledAthletes);
-
-    free(allAthletes);
-    free(disciplines);
-    return 0;
-}
+#include "atleta.h"
 
 void ConfigurarTerminal()
 {
@@ -98,7 +15,7 @@ void ConfigurarTerminal()
 
 void CarregarBiografias(Athlete *allAthletes, int athletesLimit)
 {
-    FILE *bios = fopen("bios.csv", "r");
+    FILE *bios = fopen("../bios.csv", "r");
 
     // Verifica se o arquivo foi aberto corretamente
     if (bios == NULL) 
@@ -147,7 +64,7 @@ void CarregarBiografias(Athlete *allAthletes, int athletesLimit)
 int MapearPiorPosicaoEsportes(DisciplineStats *disciplines, int disciplinesLimit)
 {
     // Mapear a pior posição de cada esporte para normalização
-    FILE *results = fopen("results.csv", "r");
+    FILE *results = fopen("../results.csv", "r");
     if (results == NULL) return 0;
 
     char buffer[1024];
@@ -196,7 +113,7 @@ int MapearPiorPosicaoEsportes(DisciplineStats *disciplines, int disciplinesLimit
 void ProcessarResultadosIndividuais(Athlete *allAthletes, int athletesLimit)
 {
     // Processar as idades e piores posições individuais
-    FILE *results = fopen("results.csv", "r");
+    FILE *results = fopen("../results.csv", "r");
     if (results == NULL) 
     {
         printf("Erro ao abrir o ficheiro results.csv!");
