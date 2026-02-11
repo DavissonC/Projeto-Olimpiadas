@@ -68,7 +68,8 @@ Para garantir eficiência e a pontuação extra de interface visual, utilizamos:
 
   * Q19 - Autoral: 
    ```
-   gcc 
+   gcc "Questao 19 (Versao Autoral).c" atleta.c graficos.c -o "Questao 19 (Versao Autoral)"
+   "Questao 19 (Versao Autoral).exe"
    ```
 
 
