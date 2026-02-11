@@ -50,14 +50,14 @@ Para garantir eficiência e a pontuação extra de interface visual, utilizamos:
    * Q09:          
     
 
-    gcc 
+    cd "Questao 9 (Versao Original)"  && gcc Questao-9.c -o "Questao 9 (Versao Original)" && "Questao 9 (Versao Original).exe" && cd ..
 
    
 
    * Q09 - Autoral:       
     
 
-    cd Questao-9-versao-autoral  && gcc Questao-9-versao-autoral.c -o "Questao 9 (Versao Autoral)" && "Questao 9 (Versao Autoral).exe" && cd ..
+    cd "Questao 9 (Versao Autoral)"  && gcc Questao-9-versao-autoral.c -o "Questao 9 (Versao Autoral)" && "Questao 9 (Versao Autoral).exe" && cd ..
    
 
    * Q19:         
