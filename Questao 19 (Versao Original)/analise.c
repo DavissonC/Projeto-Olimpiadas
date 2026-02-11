@@ -53,75 +53,79 @@ void ordenar_medalhistas (Medalhista* lista, int total_medalhistas ) {
 // Função para exibir o relatório final (Top N por gênero).
 void exibir_ranking_idade (Medalhista* lista, int total_medalhistas, int top_n ) {
 
-    // TÍTULO GERAL:
-    printf( "\n===================================================================\n" );
-    printf( " RELATÓRIO: TOP %d MEDALHISTAS MAIS VELHOS DA HISTÓRIA POR GÊNERO\n", top_n );
-    printf( "===================================================================\n" );
-
-
     // Alocar dinâmicamente a memória de um array de ponteiros para strings (char*).
     char** nomes_impressos = (char**) malloc(top_n * sizeof(char*));
 
 
     // LOOP 1 - FEMININO:
-    printf( "\n--- FEMININO ---\n" );
-    int contador = 0;
+        printf( "\n==============================================================================================================================================================\n" );
+        printf( "                                               TOP %d MEDALHISTAS MAIS VELHOS DA HISTÓRIA - FEMININO                                               \n", top_n );
+        printf( "==============================================================================================================================================================\n" );
+        printf("%-4s | %-28s   | %-5s | %-26s | %-21s | %s\n", "Rank", "Atleta", "Idade", "País", "Olimpíada", "Disciplina");
+        printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+        
+        int contador = 0;
 
-    for ( int i = 0 ; i < total_medalhistas ; i++ ) {
-        // Filtrar por gênero 'F'.
-        if ( lista[i].genero == 'F' ) {
+        for ( int i = 0 ; i < total_medalhistas ; i++ ) {
+            // Filtrar por gênero 'F'.
+            if ( lista[i].genero == 'F' ) {
 
-            if ( lista[i].idade_no_evento > 0 && lista[i].idade_no_evento < 98 ) {
+                if ( lista[i].idade_no_evento > 0 && lista[i].idade_no_evento < 98 ) {
 
-                // Verificar se a atleta já apareceu no ranking.
-                if ( !nome_ja_exibido(nomes_impressos, contador, lista[i].nome) ) {
+                    // Verificar se a atleta já apareceu no ranking.
+                    if ( !nome_ja_exibido(nomes_impressos, contador, lista[i].nome) ) {
 
-                    printf( "%d. %s (%s)\n", contador + 1, lista[i].nome, lista[i].pais );
-                    printf( "   Idade: %d anos | Medalha: %s\n", lista[i].idade_no_evento, lista[i].medalha );
-                    printf( "   Evento: %s (%d)\n", lista[i].modalidade, lista[i].ano_olimpiada );
-                    printf( "------------------------------------------------------------------\n" );
+                        printf( "%02d   | %-30.30s | %-5d | %-25.25s | %d | %s\n", contador + 1, lista[i].nome, lista[i].idade_no_evento, lista[i].pais, lista[i].ano_olimpiada, lista[i].modalidade );
 
-                    nomes_impressos[contador] = lista[i].nome;
-                    contador++;
+                        nomes_impressos[contador] = lista[i].nome;
+                        contador++;
+                    }
+
+                    if ( contador >= top_n ) break;                                      // Para assim que completar o Top N.
                 }
-
-                if ( contador >= top_n ) break;                                          // Para assim que completar o Top N.
             }
         }
-    }
 
-    if ( contador == 0 ) printf( "Nenhum registro encontrado.\n" );
+        printf( "\n" );
+
+        if ( contador == 0 ) printf( "Nenhum registro encontrado.\n" );
+    //
 
 
     // LOOP 2 - MASCULINO:
-    printf( "\n\n--- MASCULINO ---\n" );
-    contador = 0;                                                                        // Reiniciar o contador.
+        printf( "\n==============================================================================================================================================================\n" );
+        printf( "                                               TOP %d MEDALHISTAS MAIS VELHOS DA HISTÓRIA - MASCULINO                                               \n", top_n );
+        printf( "==============================================================================================================================================================\n" );
+        printf("%-4s | %-28s   | %-5s | %-26s | %-21s | %s\n", "Rank", "Atleta", "Idade", "País", "Olimpíada", "Disciplina");
+        printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
-    for ( int i = 0 ; i < total_medalhistas ; i++ ) {
-        // Filtrar por gênero 'F'.
-        if ( lista[i].genero == 'M' ) {
+        contador = 0;                                                                        // Reiniciar o contador.
 
-            if ( lista[i].idade_no_evento > 0 && lista[i].idade_no_evento < 98 ) {
+        for ( int i = 0 ; i < total_medalhistas ; i++ ) {
+            // Filtrar por gênero 'M'.
+            if ( lista[i].genero == 'M' ) {
 
-                if ( !nome_ja_exibido(nomes_impressos, contador, lista[i].nome) ) {
+                if ( lista[i].idade_no_evento > 0 && lista[i].idade_no_evento < 98 ) {
 
-                    printf( "%d. %s (%s)\n", contador + 1, lista[i].nome, lista[i].pais );
-                    printf( "   Idade: %d anos | Medalha: %s\n", lista[i].idade_no_evento, lista[i].medalha );
-                    printf( "   Evento: %s (%d)\n", lista[i].modalidade, lista[i].ano_olimpiada );
-                    printf( "------------------------------------------------------------------\n" );
+                    if ( !nome_ja_exibido(nomes_impressos, contador, lista[i].nome) ) {
 
-                    nomes_impressos[contador] = lista[i].nome;
-                    contador++;
+                        printf( "%02d   | %-30.30s | %-5d | %-25.25s | %d | %s\n", contador + 1, lista[i].nome, lista[i].idade_no_evento, lista[i].pais, lista[i].ano_olimpiada, lista[i].modalidade );
+
+                        nomes_impressos[contador] = lista[i].nome;
+                        contador++;
+                    }
+
+                    if ( contador >= top_n ) break;                                          // Para assim que completar o Top 10).
                 }
-
-                if ( contador >= top_n ) break;                                          // Para assim que completar o Top 10).
             }
         }
-    }
-    
-    if ( contador == 0 ) printf( "Nenhum registro encontrado.\n" );
+        
+        printf( "\n\n" );
 
-    printf( "==================================================================\n" );
+        if ( contador == 0 ) printf( "Nenhum registro encontrado.\n" );
+    //
+
+    printf( "==============================================================================================================================================================" );
 
     free( nomes_impressos );                                                             // Limpar memória auxiliar.
 }

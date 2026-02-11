@@ -105,7 +105,7 @@ void GerarCodigoGnuplot() { //Cria um arquivo gnuplot que configura os gráficos
 }
 
 int main() {
-    FILE *arquivo = fopen("results.csv", "r");
+    FILE *arquivo = fopen("../results.csv", "r");
     // Abre o arquivo e verifica se abriu corretamente
     if (arquivo == NULL) {
         printf("Nao foi possivel abrir o arquivo.\n");
@@ -181,16 +181,21 @@ int main() {
         }
     }
 
-    
-    printf("Verao:\n");
-    for(int i = 0; i < totalVerao; i++) {
-        printf("Olimpiadas de %d: %d atletas\n", verao[i].ano, verao[i].qtdAtletas);
-    }
+    printf("\n+--------+------------------------+------------------------+");
+    printf("\n|        |        VERAO           |        INVERNO         |");
+    printf("\n+--------+-------+----------------+-------+----------------+");
+    printf("\n| Edicao |  Ano  | Qtd de atletas |  Ano  | Qtd de atletas |");
+    printf("\n+--------+-------+----------------+-------+----------------+\n");
 
-    printf("\nInverno:\n");
-    for(int i = 0; i < totalInverno; i++) {
-        printf("Olimpiadas de %d: %d atletas\n", inverno[i].ano, inverno[i].qtdAtletas);
+    for (int i = 0; i < 10; i++) {
+        int anoVerao = (i < totalVerao) ? verao[i].ano : 0;
+        int qtdVerao = (i < totalVerao) ? verao[i].qtdAtletas : 0;
+        int anoInverno = (i < totalInverno) ? inverno[i].ano : 0;
+        int qtdInverno = (i < totalInverno) ? inverno[i].qtdAtletas : 0;
+        printf("|   %02d   | %5d |     %5d      | %5d |     %5d      |\n", 
+               i + 1, anoVerao, qtdVerao, anoInverno, qtdInverno);
     }
+    printf("+--------+-------+----------------+-------+----------------+\n");
 
     GerarArquivosGnuplot(verao, totalVerao, inverno, totalInverno);
 
