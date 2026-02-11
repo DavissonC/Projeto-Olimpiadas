@@ -44,23 +44,33 @@ Para garantir eficiência e a pontuação extra de interface visual, utilizamos:
 
 2.  **Arquivos de Dados:**
     * Os arquivos `bios.csv` e `results.csv` devem estar na pasta superior (`../`) para serem lidos corretamente pelo programa.
+    * Para obtê-los, baixe do seguinte repositório: ([Olympics-Dataset](https://github.com/KeithGalli/Olympics-Dataset)) 
 
 3.  **Compilação:**
    * Q09:          
-    ```
+    
+
     gcc 
-    ```
+
+   
+
    * Q09 - Autoral:       
-    ```
+    
+
     gcc 
-    ```
+   
+
    * Q19:         
-    ```
+
+   
     gcc main.c leitura.c analise.c gui.c atleta.c graficos.c -lraylib -o olympics_analysis
-    ```
+    
+
   * Q19 - Autoral: 
-    ```
-    gcc
-    ```
+   ```
+   gcc 
+   ```
+
+
 ---
 #### **© 2025. All rights reserved. Federal University of Sergipe.**
